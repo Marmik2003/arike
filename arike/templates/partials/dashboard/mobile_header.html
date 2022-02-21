@@ -1,0 +1,45 @@
+<button
+  class="cursor-pointer text-black opacity-50 md:hidden px-3 py-1 text-xl leading-none bg-transparent rounded border border-solid border-transparent"
+  type="button"
+  onclick="toggleNavbar('example-collapse-sidebar')"
+>
+  <i class="fas fa-bars"></i>
+</button>
+<span
+  class="md:block text-left md:pb-1 md:pt-3 md:text-white text-green-600 font-bold text-xl mr-0 inline-block whitespace-nowrap text-xl px-6">
+          Arike
+        </span>
+<ul class="md:hidden items-center flex flex-wrap list-none">
+  <li class="inline-block relative">
+    <a
+      class=" block"
+      href="#"
+      onclick="openDropdown(event,'user-responsive-dropdown')"
+    >
+      <div class="items-center flex">
+                  <span
+                    class="w-12 h-12 text-sm text-black texl-xl inline-flex items-center justify-center rounded-full"
+                  >
+                    <i class="fas fa-user"></i>
+                  </span>
+      </div>
+    </a>
+    <div
+      class="hidden bg-white text-base z-50 float-left py-2 list-none text-left rounded shadow-lg min-w-48"
+      id="user-responsive-dropdown"
+    >
+              <span class="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-green-500">
+                {{ request.user.first_name }} {{ request.user.last_name }}
+              </span>
+      <a href="#" class="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent">
+        Profile
+      </a>
+      <div class="h-0 my-2 border border-solid"></div>
+      <a
+        href="{% url 'users:logout' %}"
+        class="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent"
+      >Logout</a
+      >
+    </div>
+  </li>
+</ul>

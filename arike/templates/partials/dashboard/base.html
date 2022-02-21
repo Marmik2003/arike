@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block styles %}
+  <link rel="stylesheet"
+        href="{% static 'vendor/@fortawesome/fontawesome-free/css/all.min.css' %}">
+{% endblock %}
+{% block content %}
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root">
+    <nav
+      class="md:left-0 md:block md:fixed md:top-0 md:bottom-0 md:overflow-y-auto md:flex-row md:flex-nowrap md:overflow-hidden md:bg-green-600 shadow-xl bg-white flex flex-wrap items-center justify-between relative md:w-64 z-10 py-4 px-6 md:px-0"
+    >
+      <div
+        class="md:flex-col md:items-stretch md:min-h-full md:flex-nowrap px-0 flex flex-wrap items-center justify-between w-full mx-auto"
+      >
+        {% include 'partials/dashboard/mobile_header.html' %}
+        <div
+          class="md:flex md:flex-col md:items-stretch md:opacity-100 md:relative md:mt-4 md:shadow-none shadow absolute top-0 left-0 right-0 z-40 overflow-y-auto overflow-x-hidden h-auto items-center flex-1 rounded hidden"
+          id="example-collapse-sidebar"
+        >
+          <div
+            class="md:min-w-full md:hidden block pb-4 mb-4 border-b border-solid "
+          >
+            <div class="flex flex-wrap">
+              <div class="w-6/12">
+                <span
+                  class="md:block text-left md:pb-2 md:text-white text-green-600 mr-0 inline-block whitespace-nowrap text-sm uppercase text-xl p-4 px-0"
+                >
+                  Arike
+                </span>
+              </div>
+              <div class="w-6/12 flex justify-end">
+                <button
+                  type="button"
+                  class="cursor-pointer text-black opacity-50 md:hidden px-3 py-1 text-xl leading-none bg-transparent rounded border border-solid border-transparent"
+                  onclick="toggleNavbar('example-collapse-sidebar')"
+                >
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Heading -->
+          <div class="flex md:flex-col">
+            <div class="pb-16 md:text-white">
+{#              <h6#}
+{#                class="md:min-w-full  text-xs uppercase font-bold block pt-1 pb-4 no-underline pl-3"#}
+{#              >#}
+{#                District Admin#}
+{#              </h6>#}
+              <!-- Navigation -->
+              <ul class="md:flex-col md:min-w-full md:min-h-full flex flex-col list-none">
+                <li class="md:border-white items-center border-l-4 pl-2 border-green-500">
+                  <a
+                    href="#"
+                    class="md:text-white text-xs py-3 font-bold block text-green-500 hover:text-green-600"
+                  >
+                    <i class="fas fa-home mr-2 text-sm opacity-75"></i>
+                    Home
+                  </a>
+                </li>
+
+                <li class="items-center pl-3">
+                  <a
+                    href="#"
+                    class="text-xs py-3 font-bold block hover:"
+                  >
+                    <i class="fas fa-building mr-2 text-sm "></i>
+                    Facility
+                  </a>
+                </li>
+
+                <li class="items-center pl-3">
+                  <a
+                    href="#"
+                    class="text-xs py-3 font-bold block hover:"
+                  >
+                    <i class="fas fa-user-alt mr-2 text-sm "></i>
+                    Users
+                  </a>
+                </li>
+                {% block sidebar %}
+
+                {% endblock %}
+              </ul>
+            </div>
+            <div class="hidden md:block">
+              <hr class="my-4">
+              <!-- User -->
+              <div class=" pb-4 px-3">
+                <h6 class="text-xl text-green-300">{{ request.user.first_name }} {{ request.user.last_name }}</h6>
+                <a href="{% url 'users:logout' %}" class="text-white text-sm font-medium">Log out</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </nav>
+    <div class="relative md:ml-64 ">
+      <div class="px-4 mx-auto w-full">
+        <section class="my-4 py-6 mx-3 px-3">
+          {% block dashboard_content %}
+            <h2 class="text-3xl">Dashboard</h2>
+          {% endblock %}
+        </section>
+        {% block footer %}
+          {% include 'partials/dashboard/footer.html' %}
+        {% endblock %}
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block scripts %}
+  <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js"></script>
+  <script type="text/javascript">
+    /* Make dynamic date appear */
+    (function () {
+      if (document.getElementById("get-current-year")) {
+        document.getElementById(
+          "get-current-year"
+        ).innerHTML = new Date().getFullYear();
+      }
+    })();
+
+    /* Sidebar - Side navigation menu on mobile/responsive mode */
+    function toggleNavbar(collapseID) {
+      document.getElementById(collapseID).classList.toggle("hidden");
+      document.getElementById(collapseID).classList.toggle("bg-white");
+      document.getElementById(collapseID).classList.toggle("m-2");
+      document.getElementById(collapseID).classList.toggle("py-3");
+      document.getElementById(collapseID).classList.toggle("px-6");
+    }
+
+    /* Function for dropdowns */
+    function openDropdown(event, dropdownID) {
+      let element = event.target;
+      while (element.nodeName !== "A") {
+        element = element.parentNode;
+      }
+      Popper.createPopper(element, document.getElementById(dropdownID), {
+        placement: "bottom-start",
+      });
+      document.getElementById(dropdownID).classList.toggle("hidden");
+      document.getElementById(dropdownID).classList.toggle("block");
+    }
+  </script>
+{% endblock %}

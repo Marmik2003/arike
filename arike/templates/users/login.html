@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block content %}
+  <div class="bg-gray-50">
+    <div class="flex justify-center h-screen">
+      <!-- Row -->
+      <div class="w-full flex">
+        <!-- Col -->
+        <div
+          class="w-full h-full md:flex hidden bg-cover bg-green-700 items-center"
+        >
+          <div class="container mx-32 text-gray-50 mb-32 space-y-8">
+            <h4 class="text-6xl font-semibold">Arike</h4>
+            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Unde magnam!</p>
+          </div>
+        </div>
+        <!-- Col -->
+        <div class="w-full place-self-center place-self-center px-12">
+          <h4 class="text-6xl font-medium block pt-4 px-8 md:hidden">Arike</h4>
+          <h3 class="pt-4 text-4xl px-8">Login!</h3>
+          <form class="px-8 pt-6 pb-8 mb-4" method="post">
+            {% csrf_token %}
+            <div class="mb-4">
+              <label class="block mb-2 text-sm font-bold text-gray-700" for="username">
+                {{ form.username.label }}
+              </label>
+              {{ form.username }}
+            </div>
+            <div class="mb-4">
+              <label class="block mb-2 text-sm font-bold text-gray-700" for="password">
+                {{ form.password.label }}
+              </label>
+              {{ form.password }}
+            </div>
+            <div class="my-6 text-center">
+              <button
+                class="w-full px-4 py-2 font-bold text-white bg-green-600 rounded-md hover:bg-green-700 focus:outline-none focus:shadow-outline"
+                type="submit"
+              >
+                Sign In
+              </button>
+            </div>
+            {% if form.errors %}
+              {% for error in form.non_field_errors %}
+                <p class="text-red-500"> {{ error }} </p>
+              {% endfor %}
+            {% endif %}
+            {#							<hr class="mb-6 border-t" />#}
+            {#							<div class="text-center">#}
+            {#								<a#}
+            {#									class="inline-block text-sm text-green-500 align-baseline hover:text-blue-800"#}
+            {#									href="./forgot-password.html"#}
+            {#								>#}
+            {#									Forgot Password?#}
+            {#								</a>#}
+            {#							</div>#}
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
