@@ -1,5 +1,5 @@
 from django.db import models
-from utils.models import BaseModel
+from arike.utils.models import BaseModel
 
 
 # Cpnstants

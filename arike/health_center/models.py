@@ -1,7 +1,7 @@
 from django.db import models
 from multiselectfield import MultiSelectField
 
-from utils.models import BaseModel
+from arike.utils.models import BaseModel
 
 # Create your models here.
 GENDER_CHOICES = (
