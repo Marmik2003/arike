@@ -62,6 +62,7 @@
       <option name="ignoredIdentifiers">
         <list>
           <option value="institute_module.permission_mixin.InstituteRequiredMixin.request" />
+          <option value="django.contrib.auth.models.User.district" />
         </list>
       </option>
     </inspection_tool>
