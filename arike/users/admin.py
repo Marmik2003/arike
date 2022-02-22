@@ -13,7 +13,7 @@ class CustomUserAdmin(UserAdmin):
     list_filter = ('phone_number', 'email', 'is_active',)
     fieldsets = (
         (None, {'fields': ('phone_number', 'email', 'password')}),
-        ('Personal info', {'fields': ('first_name', 'last_name')}),
+        ('Personal info', {'fields': ('first_name', 'last_name', 'district')}),
         ('Permissions', {'fields': ('role', 'is_verified', 'is_active',)}),
     )
     add_fieldsets = (
@@ -21,7 +21,7 @@ class CustomUserAdmin(UserAdmin):
             'classes': ('wide',),
             'fields': ('phone_number', 'email', 'password1', 'password2',)}
          ),
-        ('Personal info', {'fields': ('first_name', 'last_name')}),
+        ('Personal info', {'fields': ('first_name', 'last_name', 'district')}),
         ('Permissions', {'fields': ('role', 'is_verified', 'is_active',)}),
     )
     search_fields = ('phone_number', 'email')
