@@ -52,3 +52,4 @@ Please note: For Celery's import magic to work, it is important *where* the cele
 ## Deployment
 
 This application is deployed to DigitalOcean Droplet by Marmik.
+[Arike](https://arike.thedataboy.com)
