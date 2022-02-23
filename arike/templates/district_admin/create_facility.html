@@ -1,0 +1,98 @@
+{% extends 'partials/dashboard/base.html' %}
+{% block title %}Facilities - District Admin{% endblock %}
+{% block sidebar %}
+  {% include 'district_admin/partials/sidebar.html' %}
+{% endblock %}
+{% block dashboard_content %}
+  <div class="flex flex-wrap justify-center">
+    <div class="flex w-full md:w-1/2">
+      <h2 class="text-4xl">Create Facility</h2>
+    </div>
+  </div>
+  <div class="flex my-8 justify-center">
+    <div class="w-full md:w-1/2">
+      <form method="post">
+        {% csrf_token %}
+        {% if form.errors %}
+          {% for error in form.non_field_errors %}
+            <p> {{ error }} </p>
+          {% endfor %}
+        {% endif %}
+        <div class="flex flex-wrap w-full">
+          <div class="flex w-full">
+            <label class="w-full py-3">
+              <span class="text-2xl">Kind</span>
+            </label>
+          </div>
+
+          {% for kind in form.kind %}
+            <div class="flex w-1/2">
+              <div class="flex items-center mr-4 mb-4">
+                {{ kind }}
+              </div>
+            </div>
+          {% endfor %}
+          <p class="text-gray-500 my-2 mx-6">{{ form.kind.errors }}</p>
+        </div>
+        <div class="flex flex-wrap -mx-3 mb-6">
+          <div class="w-full px-3 mb-6 md:mb-0">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                   for="{{ form.name.id_for_label }}">
+              {{ form.name.label }}
+            </label>
+            {{ form.name }}
+          </div>
+          <p class="text-gray-500 my-2 mx-6">{{ form.name.errors }}</p>
+        </div>
+        <div class="flex flex-wrap -mx-3 mb-6">
+          <div class="w-full px-3 mb-6 md:mb-0">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                   for="{{ form.address.id_for_label }}">
+              {{ form.address.label }}
+            </label>
+            {{ form.address }}
+          </div>
+          <p class="text-gray-500 my-2 mx-6">{{ form.address.errors }}</p>
+        </div>
+        <div class="flex flex-wrap -mx-3 mb-6">
+          <div class="w-full px-3 mb-6 md:mb-0">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                   for="{{ form.ward.id_for_label }}">
+              {{ form.ward.label }}
+            </label>
+            {{ form.ward }}
+          </div>
+          <p class="text-gray-500 my-2 mx-6">{{ form.ward.errors }}</p>
+        </div>
+        <div class="grid md:grid-cols-2 w-full mb-6 gap-2">
+          <div class="w-full mb-6 md:mb-0">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                   for="{{ form.pincode.id_for_label }}">
+              {{ form.pincode.label }}
+            </label>
+            {{ form.pincode }}
+            <p class="text-gray-500 my-2 mx-6">{{ form.pincode.errors }}</p>
+          </div>
+          <div class="w-full mb-6 md:mb-0">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                   for="{{ form.phone.id_for_label }}">
+              {{ form.phone.label }}
+            </label>
+            <div class="relative">
+              {{ form.phone }}
+            </div>
+            <p class="text-gray-500 my-2 mx-6">{{ form.phone.errors }}</p>
+          </div>
+        </div>
+        <!-- submit button -->
+        <div class="flex">
+          <button
+            class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-12 rounded-lg focus:shadow-outline "
+            type="submit">
+            Create
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

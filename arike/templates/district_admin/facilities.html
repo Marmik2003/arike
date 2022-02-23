@@ -1,12 +1,149 @@
 {% extends 'partials/dashboard/base.html' %}
-{% block title %}Home - District Admin{% endblock %}
+{% load static %}
+{% block title %}Facilities - District Admin{% endblock %}
 {% block sidebar %}
-    {% include 'district_admin/partials/sidebar.html' %}
+  {% include 'district_admin/partials/sidebar.html' %}
 {% endblock %}
 {% block dashboard_content %}
-  <h2 class="text-3xl">Facilities</h2>
-  <div class="container">
-
+  <div class="flex flex-wrap justify-between">
+    <div class="flex">
+      <h2 class="text-4xl">Facilities</h2>
+    </div>
+    <div class="flex">
+      <a href="{% url 'district_admin:create_facility' %}" class="text-white bg-green-600 px-3 py-2 rounded-md">Add</a>
+    </div>
   </div>
-{% endblock %}
+  <div class="container my-8">
 
+    <div class="relative flex flex-wrap items-stretch">
+      <span
+        class="z-10 h-full leading-snug font-normal absolute text-center text-slate-400 absolute bg-transparent rounded text-base items-center justify-center w-8 pl-3 py-3">
+        <i class="fas fa-search"></i>
+      </span>
+      <input type="text" placeholder="Search..." id="search_query" onchange="searchQuery()" value="{{ request.GET.query }}"
+             class="border-0 px-3 py-3 relative rounded-md bg-slate-100 text-sm shadow outline-none focus:outline-none pl-10">
+    </div>
+
+    <div class="bg-slate-100 p-4 rounded-xl mt-4 md:w-10/12">
+      <div class="flex flex-wrap">
+        <h4 class="text-3xl px-3">Filters</h4>
+      </div>
+      <form method="get" id="filter_form">
+        <div class="flex flex-wrap w-full md:py-6 pt-6 pb-0">
+          <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-ward">
+              Ward
+            </label>
+            <select
+              class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded focus:outline-none focus:border-0"
+              id="input-ward">
+              <option value="">Choose...</option>
+              {% for ward in wards %}
+                {% if ward.name == request.GET.ward  %}
+                  <option value="{{ ward.name }}" selected>{{ ward.name }}</option>
+                {% else %}
+                  <option value="{{ ward.name }}">{{ ward.name }}</option>
+                {% endif %}
+              {% endfor %}
+            </select>
+          </div>
+          <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-kind">
+              Kind
+            </label>
+            <div class="relative">
+              <select
+                class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded focus:outline-none focus:border-0"
+                id="input-kind">
+                <option value="">Choose</option>
+                {% if request.GET.kind == 'phc' %}
+                  <option value="phc" selected>PHC</option>
+                {% else %}
+                  <option value="phc">PHC</option>
+                {% endif %}
+                {% if request.GET.kind == 'chc' %}
+                  <option value="chc" selected>CHC</option>
+                {% else %}
+                  <option value="chc">CHC</option>
+                {% endif %}
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-wrap w-full px-3">
+          <button type="submit" class="text-white bg-green-600 px-3 py-2 rounded-md">Apply</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="grid-cols-1 md:grid-cols-2 grid w-full my-8 gap-2">
+
+    {% for facility in facilities %}
+      <!-- Card Start -->
+      <div class=" w-full">
+        <div class="bg-slate-100 rounded-xl py-6">
+          <div class="flex flex-wrap w-full justify-between px-6">
+            <div class="flex w-8/12">
+              <h4 class="text-3xl">{{ facility.name }}</h4>
+            </div>
+            <div class="flex w-4/12 justify-end">
+              <span
+                class="text-white bg-gray-600 opacity-50 hover:opacity-100 px-6 py-2 rounded-full">{{ facility.get_kind_display }}</span>
+            </div>
+          </div>
+          <div class="w-full py-6 px-6">
+            <p class="text-gray-600">
+              {{ facility.address }} - {{ facility.pincode }}
+            </p>
+            <h6 class="font-bold">
+              {{ facility.ward.name }}
+            </h6>
+          </div>
+          <div class="py-3 px-6 border-t border-gray-300 text-gray-600">
+            <div class="flex flex-wrap w-full justify-between">
+              <div class="flex">
+                <h4 class="py-2">{{ facility.phone }}</h4>
+              </div>
+              <div class="flex">
+                <a href="{% url 'district_admin:delete_facility' facility.id %}"
+                   class="bg-red-600 text-white px-3 py-2 rounded-md mr-1">
+                  <i class="fas fa-trash-alt"></i> Delete
+                </a>
+                <a href="{% url 'district_admin:update_facility' facility.id %}"
+                   class="bg-blue-600 text-white px-3 py-2 rounded-md ml-1">
+                  <i class="fas fa-edit"></i> Edit
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Card End -->
+    {% endfor %}
+  </div>
+  {% if is_paginated %}
+    <div class="flex flex-wrap w-full justify-between px-6 mb-6 mt-2">
+      <div class="flex w-1/2">
+        {% if page_obj.has_previous %}
+          <button onclick="changePage('{{ page_obj.previous_page_number }}')"
+                  class="bg-green-600 text-white px-3 py-2 rounded-md">
+            <i class="fas fa-arrow-left"></i> Previous
+          </button>
+        {% endif %}
+      </div>
+      <div class="flex w-1/2 justify-end">
+        {% if page_obj.next_page_number %}
+          <button onclick="changePage('{{ page_obj.next_page_number }}')"
+                  class="bg-green-600 text-white px-3 py-2 rounded-md">
+            Next <i class="fas fa-arrow-right"></i>
+          </button>
+        {% endif %}
+
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}
+{% block extra_scripts %}
+  <script src="{% static 'js/get_query_parser.js' %}"></script>
+{% endblock %}

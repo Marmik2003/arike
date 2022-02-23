@@ -78,7 +78,8 @@ class Facility(BaseModel):
     name = models.CharField(max_length=255)
     address = models.TextField()
     ward = models.ForeignKey(Ward, on_delete=models.PROTECT)
-    pincode = models.PositiveSmallIntegerField()
+    pincode = models.IntegerField()
+    phone = models.CharField(max_length=15, blank=True, null=True)
 
     def __str__(self):
         return f"{self.name} ({self.pincode})"

@@ -1,26 +1,46 @@
 {% load static tailwind_tags %}
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-    <title>
-        {% block title %}
-            Arike
-        {% endblock %}
-    </title>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta http-equiv="X-UA-Compatible" content="ie=edge">
-		{% tailwind_css %}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/metismenu/dist/metisMenu.min.css">
-    {% block styles %}{% endblock %}
-	</head>
+<head>
+  <title>
+    {% block title %}
+      Arike
+    {% endblock %}
+  </title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  {% tailwind_css %}
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css"
+        integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  {% block styles %}{% endblock %}
+</head>
 
-	<body>
-		{% block content %}
-
-		{% endblock %}
-    <script src="https://cdn.jsdelivr.net/npm/jquery"></script>
-    <script src="https://cdn.jsdelivr.net/npm/metismenu"></script>
-    {% block scripts %}{% endblock %}
-	</body>
+<body>
+{% block content %}{% endblock %}
+<script src="https://cdn.jsdelivr.net/npm/jquery"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"
+        integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+{% block scripts %}{% endblock %}
+{% block extra_scripts %}{% endblock %}
+{% if messages %}
+  {% for message in messages %}
+    <script>
+      {% if message.tags == 'error' %}
+        toastr.error('Error', '{{ message }}');
+      {% elif message.tags == 'success' %}
+        toastr.success('Success', '{{ message }}');
+      {% elif message.tags == 'warning' %}
+        toastr.warning('Warning', '{{ message }}');
+      {% elif message.tags == 'info' %}
+        toastr.info('Information', '{{ message }}');
+      {% endif %}
+    </script>
+  {% endfor %}
+{% endif %}
+</body>
 </html>

@@ -1,0 +1,80 @@
+{% extends 'partials/dashboard/base.html' %}
+{% load static %}
+{% block title %}Facilities - District Admin{% endblock %}
+{% block sidebar %}
+  {% include 'district_admin/partials/sidebar.html' %}
+{% endblock %}
+{% block dashboard_content %}
+  <div class="flex flex-wrap justify-between">
+    <div class="flex">
+      <h2 class="text-4xl">Facilities</h2>
+    </div>
+    <div class="flex">
+      <a href="{% url 'district_admin:create_facility' %}" class="text-white bg-green-600 px-3 py-2 rounded-md">Add</a>
+    </div>
+  </div>
+  <div class="container my-8">
+
+    <div class="relative flex flex-wrap items-stretch">
+      <span
+        class="z-10 h-full leading-snug font-normal absolute text-center text-slate-400 absolute bg-transparent rounded text-base items-center justify-center w-8 pl-3 py-3">
+        <i class="fas fa-search"></i>
+      </span>
+      <input type="text" placeholder="Search..." id="search_query" onchange="searchQuery()" value="{{ request.GET.query }}"
+             class="border-0 px-3 py-3 relative rounded-md bg-slate-100 text-sm shadow outline-none focus:outline-none pl-10">
+    </div>
+
+    <div class="bg-slate-100 p-4 rounded-xl mt-4 md:w-10/12">
+      <div class="flex flex-wrap">
+        <h4 class="text-3xl px-3">Filters</h4>
+      </div>
+      <form method="get" id="filter_form">
+        <div class="flex flex-wrap w-full md:py-6 pt-6 pb-0">
+          <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-ward">
+              Ward
+            </label>
+            <select
+              class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded focus:outline-none focus:border-0"
+              id="input-ward">
+              <option value="">---------</option>
+            </select>
+          </div>
+          <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-facility">
+              Facility
+            </label>
+            <select
+              class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded focus:outline-none focus:border-0"
+              id="input-facility">
+              <option value="">---------</option>
+            </select>
+          </div>
+          <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-kind">
+              Role
+            </label>
+            <div class="relative">
+              <select
+                class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded focus:outline-none focus:border-0"
+                id="input-kind">
+                <option value="">Choose</option>
+
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-wrap w-full px-3">
+          <button type="submit" class="text-white bg-green-600 px-3 py-2 rounded-md">Apply</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="grid-cols-1 md:grid-cols-2 grid w-full my-8 gap-2">
+
+  </div>
+{% endblock %}
+{% block extra_scripts %}
+  <script src="{% static 'js/get_query_parser.js' %}"></script>
+{% endblock %}

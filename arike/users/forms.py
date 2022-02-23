@@ -9,10 +9,10 @@ class UserLoginForm(AuthenticationForm):
         super(UserLoginForm, self).__init__(*args, **kwargs)
 
     username = UsernameField(widget=forms.TextInput(
-        attrs={'class': 'bg-slate-200 px-4 py-2 outline-none rounded-md w-full border-0'}))
+        attrs={'class': 'bg-slate-100 px-4 py-2 outline-none rounded-md w-full border-0'}))
     password = forms.CharField(widget=forms.PasswordInput(
         attrs={
-            'class': 'bg-slate-200 px-4 py-2 outline-none rounded-md w-full border-0',
+            'class': 'bg-slate-100 px-4 py-2 outline-none rounded-md w-full border-0',
         }
     ))
 
