@@ -1,0 +1,77 @@
+{% extends 'partials/dashboard/base.html' %}
+{% load static %}
+{% block title %}Users - District Admin{% endblock %}
+{% block sidebar %}
+  {% include 'district_admin/partials/sidebar.html' %}
+{% endblock %}
+{% block dashboard_content %}
+  <div class="flex my-8 justify-center">
+    <div class="w-full md:w-8/12">
+      <div class="block" id="form_1">
+        <div class="flex flex-inline mb-12">
+          <div class="flex w-full">
+            <h2 class="text-3xl">Profile</h2>
+          </div>
+          <div class="flex flex-inline w-min">
+            <a href="{% url 'district_admin:delete_user' user.id %}" class="px-4 py-2 text-red-600 font-semibold mr-4 border-red-600 border-2 rounded-lg mr-2">Delete</a>
+            <a href="{% url 'district_admin:update_user' user.id %}" class="px-4 py-2 text-white font-semibold mr-4 bg-green-600 rounded-lg">Edit</a>
+          </div>
+        </div>
+        <div class="grid w-full mb-6 gap-2">
+          <div class="w-full mb-6 md:mb-0">
+            <div class="flex flex-inline">
+              <div class="w-1/2 md:w-1/4">
+                <h3 class="text-lg">Name: </h3>
+              </div>
+              <div class="w-1/2">
+                <p class="text-gray-600">{{ user.first_name }} {{ user.last_name }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="w-full mb-6 md:mb-0">
+            <div class="flex flex-inline">
+              <div class="w-1/2 md:w-1/4">
+                <h3 class="text-lg">Email:</h3>
+              </div>
+              <div class="w-1/2">
+                <p class="text-gray-600">{{ user.email }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="w-full mb-6 md:mb-0">
+            <div class="flex flex-inline">
+              <div class="w-1/2 md:w-1/4">
+                <h3 class="text-lg">Phone: </h3>
+              </div>
+              <div class="w-1/2">
+                <p class="text-gray-600">{{ user.phone_number }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="w-full mb-6 md:mb-0">
+            <div class="flex flex-inline">
+              <div class="w-1/2 md:w-1/4">
+                <h3 class="text-lg">Facility: </h3>
+              </div>
+              <div class="w-1/2">
+                <p class="text-gray-600">{{ user.facility }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="w-full mb-6 md:mb-0">
+            <div class="flex flex-inline">
+              <div class="w-1/2 md:w-1/4">
+                <h3 class="text-lg">Role: </h3>
+              </div>
+              <div class="w-1/2">
+                <p class="text-gray-600">{{ user.get_role_display }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex">
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

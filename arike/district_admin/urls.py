@@ -11,7 +11,8 @@ from arike.district_admin.views.users_views import (
     CreateUserView,
     UpdateUserView,
     DeleteUserView,
-    DetailUserView
+    DetailUserView,
+    get_facility_from_ward
 )
 
 app_name = 'district_admin'
@@ -35,4 +36,10 @@ urlpatterns += [
     path('users/update/<int:pk>/', UpdateUserView.as_view(), name='update_user'),
     path('users/delete/<int:pk>/', DeleteUserView.as_view(), name='delete_user'),
     path('users/detail/<int:pk>/', DetailUserView.as_view(), name='detail_user'),
+]
+
+
+# Ajax Paths
+urlpatterns += [
+    path('users/get_facility_from_ward/', get_facility_from_ward, name='get_facility_from_ward'),
 ]

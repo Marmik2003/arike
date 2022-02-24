@@ -36,4 +36,22 @@ class FacilityForm(forms.ModelForm):
 class UserForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email', 'phone_number', 'role', 'facility', 'district', 'password']
+        fields = ['first_name', 'last_name', 'email', 'phone_number', 'role', 'facility']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['first_name'].widget.attrs.update({'class': input_classes})
+        self.fields['last_name'].widget.attrs.update({'class': input_classes})
+        self.fields['email'].widget.attrs.update({'class': input_classes})
+        self.fields['phone_number'].widget.attrs.update({'class': input_classes})
+        self.fields['role'].widget.attrs.update({'class': input_classes})
+        self.fields['role'].choices = [('', 'Select Role')] +\
+                                      [(choice[0], choice[1]) for choice in self.fields['role'].choices[2:]]
+        self.fields['facility'].widget.attrs.update({'class': input_classes, 'required': 'required'})
+
+        if 'ward' in self.data:
+            try:
+                ward = int(self.data.get('ward'))
+                self.fields['facility'].queryset = Facility.objects.filter(ward_id=ward)
+            except (ValueError, TypeError):
+                pass

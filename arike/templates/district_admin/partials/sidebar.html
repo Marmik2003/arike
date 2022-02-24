@@ -42,12 +42,24 @@
   </li>
 {% endif %}
 
-<li class="items-center pl-3">
-  <a
-    href="#"
-    class="text-xs py-3 font-bold block hover:"
-  >
-    <i class="fas fa-user-alt mr-2 text-sm "></i>
-    Users
-  </a>
-</li>
+{% if 'users/' in request.path %}
+  <li class="items-center pl-2 border-l-4 pl-2 border-green-500 md:border-white">
+    <a
+      href="{% url 'district_admin:users' %}"
+      class="text-xs py-3 font-bold block text-green-500 md:text-white"
+    >
+      <i class="fas fa-user-alt mr-2 text-sm"></i>
+      Users
+    </a>
+  </li>
+{% else %}
+  <li class="items-center pl-3">
+    <a
+      href="{% url 'district_admin:users' %}"
+      class="text-xs py-3 font-bold block"
+    >
+      <i class="fas fa-user-alt mr-2 text-sm"></i>
+      Users
+    </a>
+  </li>
+{% endif %}

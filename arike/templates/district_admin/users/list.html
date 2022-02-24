@@ -1,16 +1,16 @@
 {% extends 'partials/dashboard/base.html' %}
 {% load static %}
-{% block title %}Facilities - District Admin{% endblock %}
+{% block title %}Users - District Admin{% endblock %}
 {% block sidebar %}
   {% include 'district_admin/partials/sidebar.html' %}
 {% endblock %}
 {% block dashboard_content %}
   <div class="flex flex-wrap justify-between">
     <div class="flex">
-      <h2 class="text-4xl">Facilities</h2>
+      <h2 class="text-4xl">Users</h2>
     </div>
     <div class="flex">
-      <a href="{% url 'district_admin:create_facility' %}" class="text-white bg-green-600 px-3 py-2 rounded-md">Add</a>
+      <a href="{% url 'district_admin:create_user' %}" class="text-white bg-green-600 px-3 py-2 rounded-md">Add</a>
     </div>
   </div>
   <div class="container my-8">
@@ -20,7 +20,8 @@
         class="z-10 h-full leading-snug font-normal absolute text-center text-slate-400 absolute bg-transparent rounded text-base items-center justify-center w-8 pl-3 py-3">
         <i class="fas fa-search"></i>
       </span>
-      <input type="text" placeholder="Search..." id="search_query" onchange="searchQuery()" value="{{ request.GET.query }}"
+      <input type="text" placeholder="Search..." id="search_query" onchange="searchQuery()"
+             value="{{ request.GET.query }}"
              class="border-0 px-3 py-3 relative rounded-md bg-slate-100 text-sm shadow outline-none focus:outline-none pl-10">
     </div>
 
@@ -30,17 +31,21 @@
       </div>
       <form method="get" id="filter_form">
         <div class="flex flex-wrap w-full md:py-6 pt-6 pb-0">
-          <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-ward">
+          <div class="w-full md:w-1/2 px-3 mb-6 md:mb-1">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="input-ward">
               Ward
             </label>
             <select
               class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded focus:outline-none focus:border-0"
               id="input-ward">
               <option value="">---------</option>
+              {% for ward in wards %}
+                <option value="{{ ward.id }}"
+                        {% if ward.name == request.GET.ward %}selected{% endif %}>{{ ward.name }}</option>
+              {% endfor %}
             </select>
           </div>
-          <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+          <div class="w-full md:w-1/2 px-3 mb-6 md:mb-1">
             <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-facility">
               Facility
             </label>
@@ -59,6 +64,13 @@
                 class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded focus:outline-none focus:border-0"
                 id="input-kind">
                 <option value="">Choose</option>
+                {% for user_role in user_roles %}
+                  {% if user_role.0 == request.GET.role %}
+                    <option value="{{ user_role.0 }}" selected>{{ user_role.1 }}</option>
+                  {% else %}
+                    <option value="{{ user_role.0 }}">{{ user_role.1 }}</option>
+                  {% endif %}
+                {% endfor %}
 
               </select>
             </div>
@@ -72,9 +84,40 @@
   </div>
 
   <div class="grid-cols-1 md:grid-cols-2 grid w-full my-8 gap-2">
+    {% for user in users %}
+      <!-- User card -->
+      <div class="w-full py-6 bg-slate-100 rounded-xl">
+        <div class="px-12 py-4">
+          <h4 class="text-3xl">{{ user.get_full_name }}</h4>
+          <p class="text-sm font-medium uppercase text-gray-700">{{ user.get_role_display }}</p>
+          <p class="text-sm font-bold text-gray-500">
+            Facility: <span class="text-gray-500 font-normal">{% if user.facility %}
+            {{ user.facility.name }}{% endif %}</span>
+          </p>
+        </div>
 
+        <div class="border-t py-6 px-12">
+          <p class="text-sm text-gray-600">
+            <span class="font-bold">Address: </span> <span>{{ user.facility.address }}</span>
+            <br>
+          </p>
+          <div class="flex justify-end pt-6">
+            <a href="{% url 'district_admin:detail_user' user.id %}" class="text-sm text-white bg-green-600 px-3 py-2 rounded-md">View Profile</a>
+          </div>
+        </div>
+      </div>
+      <!-- End User card -->
+    {% empty %}
+      <div class="w-full py-6 ">
+        <div class="px-12 py-4">
+          <h4 class="text-3xl">No users found</h4>
+        </div>
+      </div>
+    {% endfor %}
+    {% include 'district_admin/partials/pagination.html' %}
   </div>
 {% endblock %}
 {% block extra_scripts %}
   <script src="{% static 'js/get_query_parser.js' %}"></script>
+  <script src="{% static 'js/dist_admin/users/list.js' %}"></script>
 {% endblock %}

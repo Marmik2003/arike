@@ -1,0 +1,132 @@
+{% extends 'partials/dashboard/base.html' %}
+{% load static %}
+{% block title %}Users - District Admin{% endblock %}
+{% block sidebar %}
+  {% include 'district_admin/partials/sidebar.html' %}
+{% endblock %}
+{% block dashboard_content %}
+  <div class="flex my-8 justify-center">
+    <div class="w-full md:w-8/12">
+      <form method="post">
+        {% csrf_token %}
+        {% if form.errors %}
+          {% for error in form.non_field_errors %}
+            <p> {{ error }} </p>
+          {% endfor %}
+        {% endif %}
+        <div class="block" id="form_1">
+          <div class="flex flex-wrap mb-12">
+            <div class="flex w-full">
+              <h2 class="text-4xl">Update User</h2>
+            </div>
+          </div>
+          <div class="grid md:grid-cols-2 w-full mb-6 gap-2">
+            <div class="w-full mb-6 md:mb-0">
+              <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                     for="{{ form.first_name.id_for_label }}">
+                {{ form.first_name.label }}
+              </label>
+              {{ form.first_name }}
+              <p class="text-gray-500 my-2 mx-6">{{ form.first_name.errors }}</p>
+            </div>
+            <div class="w-full mb-6 md:mb-0">
+              <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                     for="{{ form.last_name.id_for_label }}">
+                {{ form.last_name.label }}
+              </label>
+              <div class="relative">
+                {{ form.last_name }}
+              </div>
+              <p class="text-gray-500 my-2 mx-6">{{ form.last_name.errors }}</p>
+            </div>
+          </div>
+          <div class="grid md:grid-cols-2 w-full mb-6 gap-2">
+            <div class="w-full mb-6 md:mb-0">
+              <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                     for="{{ form.email.id_for_label }}">
+                {{ form.email.label }}
+              </label>
+              {{ form.email }}
+              <p class="text-gray-500 my-2 mx-6">{{ form.email.errors }}</p>
+            </div>
+            <div class="w-full mb-6 md:mb-0">
+              <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                     for="{{ form.phone_number.id_for_label }}">
+                {{ form.phone_number.label }}
+              </label>
+              <div class="relative">
+                {{ form.phone_number }}
+              </div>
+              <p class="text-gray-500 my-2 mx-6">{{ form.phone_number.errors }}</p>
+            </div>
+          </div>
+          <div class="flex">
+            <button id="next_page"
+              class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-12 rounded-lg focus:shadow-outline "
+              type="button">
+              Next
+            </button>
+          </div>
+        </div>
+        <div class="hidden" id="form_2">
+          <div class="flex flex-wrap mb-12">
+            <div class="flex w-full ">
+              <h2 class="text-4xl">Assign Facility</h2>
+            </div>
+          </div>
+          <div class="grid md:grid-cols-2 w-full mb-6 gap-2">
+            <div class="w-full mb-6 md:mb-0">
+              <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                     for="ward_id">
+                Ward
+              </label>
+              <select name="ward" id="ward_id" class="block py-3 px-4 w-full bg-gray-200 text-gray-700 border-gray-200 border rounded py-3 px-4 focus:outline-none focus:border-0 focus:ring-0">
+                <option value="">---------</option>
+                {% for ward in wards %}
+                  {% if ward.id == current_ward.id %}
+                    <option value="{{ ward.id }}" selected>{{ ward.name }}</option>
+                  {% else %}
+                    <option value="{{ ward.id }}">{{ ward.name }}</option>
+                  {% endif %}
+                {% endfor %}
+              </select>
+            </div>
+            <div class="w-full mb-6 md:mb-0">
+              <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                     for="{{ form.facility.id_for_label }}">
+                {{ form.facility.label }}
+              </label>
+              {{ form.facility }}
+              <p class="text-gray-500 my-2 mx-6">{{ form.facility.errors }}</p>
+            </div>
+          </div>
+          <div class="grid w-full mb-6 gap-2">
+            <div class="w-full mb-6 md:mb-0">
+              <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                     for="{{ form.role.id_for_label }}">
+                {{ form.role.label }}
+              </label>
+              {{ form.role }}
+              <p class="text-gray-500 my-2 mx-6">{{ form.role.errors }}</p>
+            </div>
+          </div>
+          <div class="flex">
+            <button id="prev_page"
+              class="border border-green-600 text-green-600 hover:text-white hover:bg-green-700 font-bold py-3 px-12 mr-2 rounded-lg focus:shadow-outline "
+              type="button">
+              Previous
+            </button>
+            <button
+              class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-12 rounded-lg focus:shadow-outline "
+              type="submit">
+              Finish
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}
+{% block extra_scripts %}
+  <script src="{% static 'js/dist_admin/users/form.js' %}"></script>
+{% endblock %}

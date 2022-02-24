@@ -10,7 +10,7 @@ from arike.district_admin.models import Facility, Ward
 
 
 class AllFacilitiesView(DistrictAdminRequiredMixin, ListView):
-    template_name = 'district_admin/facilities.html'
+    template_name = 'district_admin/facilities/facilities.html'
     context_object_name = 'facilities'
     model = Facility
     paginate_by = 10
@@ -39,7 +39,7 @@ class AllFacilitiesView(DistrictAdminRequiredMixin, ListView):
 class CreateFacilityView(DistrictAdminRequiredMixin, CreateView):
     model = Facility
     form_class = FacilityForm
-    template_name = 'district_admin/create_facility.html'
+    template_name = 'district_admin/facilities/create_facility.html'
     success_url = reverse_lazy('district_admin:facilities')
 
     def get_form(self, form_class=None):
@@ -55,7 +55,7 @@ class CreateFacilityView(DistrictAdminRequiredMixin, CreateView):
 
 
 class UpdateFacilityView(DistrictAdminRequiredMixin, UpdateView):
-    template_name = 'district_admin/update_facility.html'
+    template_name = 'district_admin/facilities/update_facility.html'
     model = Facility
     form_class = FacilityForm
     success_url = reverse_lazy('district_admin:facilities')
@@ -73,7 +73,7 @@ class UpdateFacilityView(DistrictAdminRequiredMixin, UpdateView):
 
 
 class DeleteFacilityView(DistrictAdminRequiredMixin, DeleteView):
-    template_name = 'district_admin/delete_facility.html'
+    template_name = 'district_admin/facilities/delete_facility.html'
     model = Facility
     context_object_name = 'facility'
     success_url = reverse_lazy('district_admin:facilities')
