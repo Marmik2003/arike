@@ -15,13 +15,35 @@ class AllUsersView(DistrictAdminRequiredMixin, ListView):
     context_object_name = 'users'
     paginate_by = 10
 
+    def _filter_queryset(self, queryset: User.objects):
+        ward = self.request.GET.get('ward')
+        if ward:
+            queryset = queryset.filter(facility__ward__name=ward)
+        if self.request.GET.get('facility'):
+            pass
+
+        if self.request.GET.get('role'):
+            queryset = queryset.filter(role=self.request.GET.get('role'))
+
+        if self.request.GET.get('query'):
+            queryset = queryset.filter(
+                first_name__icontains=self.request.GET.get('query'),
+            ) | queryset.filter(
+                last_name__icontains=self.request.GET.get('query'),
+            ) | queryset.filter(
+                phone_number__icontains=self.request.GET.get('query'),
+            )
+
+        return queryset.filter(is_active=True)
+
     def get_queryset(self):
-        return User.objects.filter(district=self.request.user.district).exclude(role=USER_ROLES[0][0])
+        queryset = User.objects.filter(district=self.request.user.district).exclude(role=USER_ROLES[0][0])
+        return self._filter_queryset(queryset)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['wards'] = Ward.objects.filter(localbody__district=self.request.user.district)
-
+        context['user_roles'] = USER_ROLES[1:]
         return context
 
 
@@ -100,16 +122,21 @@ class DetailUserView(DistrictAdminRequiredMixin, DetailView):
 def get_facility_from_ward(request):
     if request.user.is_authenticated and request.user.role == USER_ROLES[0][0]:
         ward_id = request.GET.get('ward')
-        facilities = Facility.objects.filter(
-            ward_id=ward_id,
-            ward__localbody__district=request.user.district
-        )
+
         if 'get_id' in request.GET:
+            facilities = Facility.objects.filter(
+                ward_id=ward_id,
+                ward__localbody__district=request.user.district
+            )
             return HttpResponse(
                 '<option value="">Select Facility</option>' +
                 ''.join(['<option value="{}">{}</option>'.format(f.id, f.name) for f in facilities])
             )
         else:
+            facilities = Facility.objects.filter(
+                ward__name=ward_id,
+                ward__localbody__district=request.user.district
+            )
             return HttpResponse(
                 '<option value="">Select Facility</option>' +
                 ''.join(['<option value="{}">{}</option>'.format(f.name, f.name) for f in facilities])

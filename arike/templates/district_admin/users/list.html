@@ -40,13 +40,13 @@
               id="input-ward">
               <option value="">---------</option>
               {% for ward in wards %}
-                <option value="{{ ward.id }}"
+                <option value="{{ ward.name }}"
                         {% if ward.name == request.GET.ward %}selected{% endif %}>{{ ward.name }}</option>
               {% endfor %}
             </select>
           </div>
           <div class="w-full md:w-1/2 px-3 mb-6 md:mb-1">
-            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-facility">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="input-facility">
               Facility
             </label>
             <select
@@ -62,7 +62,7 @@
             <div class="relative">
               <select
                 class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded focus:outline-none focus:border-0"
-                id="input-kind">
+                id="input-role">
                 <option value="">Choose</option>
                 {% for user_role in user_roles %}
                   {% if user_role.0 == request.GET.role %}

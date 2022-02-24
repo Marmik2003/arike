@@ -11,3 +11,19 @@ $("#input-ward").change(function() {
         }
     });
 });
+
+$("#filter_form").submit(function(e) {
+    e.preventDefault();
+    const ward = $("#input-ward").val();
+    const facility = $("#input-facility").val();
+    let params = parseURLParams();
+    params.page = 1;
+    if (ward.trim() !== '') {
+        params.ward = ward;
+    } else {
+        delete params.ward;
+    }
+    params.facility = facility;
+    params.role = $("#input-role").val();
+    window.location.href = window.location.href.split('?')[0] + '?' + joinParam(params);
+});
