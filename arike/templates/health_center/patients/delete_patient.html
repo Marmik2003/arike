@@ -1,0 +1,33 @@
+{% extends 'partials/dashboard/base.html' %}
+{% block title %}Patients - {{ request.user.get_role_display }}{% endblock %}
+{% block sidebar %}
+  {% include 'health_center/partials/sidebar.html' %}
+{% endblock %}
+{% block dashboard_content %}
+  <div class="flex flex-wrap justify-center">
+    <div class="flex w-full md:w-1/2">
+      <h2 class="text-4xl">Delete Patient?</h2>
+    </div>
+  </div>
+  <div class="flex my-8 justify-center">
+    <div class="w-full md:w-1/2">
+      <form method="post">
+        {% csrf_token %}
+        <div class="flex flex-wrap w-full">
+          <div class="flex w-full">
+            <label class="w-full py-3">
+              <span class="text-lg text-gray-500">Patient {{ patient.full_name }}'s  will be deleted.
+Are you sure ? Action can not be reversed.</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap w-full">
+          <div class="flex">
+            <button type="submit" class="w-full py-3 bg-red-600 text-white rounded-md px-12 py-3">Yes, delete</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

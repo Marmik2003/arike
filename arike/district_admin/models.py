@@ -75,6 +75,7 @@ class Ward(models.Model):
 
 class Facility(BaseModel):
     kind = models.CharField(max_length=4, choices=FACILITY_KIND)
+    chc = models.ForeignKey('self', on_delete=models.PROTECT, related_name="phc_set", null=True, blank=True)
     name = models.CharField(max_length=255)
     address = models.TextField()
     ward = models.ForeignKey(Ward, on_delete=models.PROTECT)

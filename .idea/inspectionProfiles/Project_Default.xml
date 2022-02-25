@@ -63,6 +63,8 @@
         <list>
           <option value="institute_module.permission_mixin.InstituteRequiredMixin.request" />
           <option value="django.contrib.auth.models.User.district" />
+          <option value="django.contrib.auth.models.User.facility" />
+          <option value="django.contrib.auth.models.User.role" />
         </list>
       </option>
     </inspection_tool>

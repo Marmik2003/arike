@@ -9,17 +9,18 @@
     <div class="w-full md:w-8/12">
       <form method="post">
         {% csrf_token %}
-        {% if form.errors %}
-          {% for error in form.non_field_errors %}
-            <p> {{ error }} </p>
-          {% endfor %}
-        {% endif %}
+
         <div class="block" id="form_1">
           <div class="flex flex-wrap mb-12">
             <div class="flex w-full">
               <h2 class="text-4xl">Create User</h2>
             </div>
           </div>
+          {% if form.errors %}
+            {% for error in form.non_field_errors %}
+              <p class="text-red-500"> {{ error }} </p>
+            {% endfor %}
+          {% endif %}
           <div class="grid md:grid-cols-2 w-full mb-6 gap-2">
             <div class="w-full mb-6 md:mb-0">
               <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
@@ -62,8 +63,8 @@
           </div>
           <div class="flex">
             <button id="next_page"
-              class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-12 rounded-lg focus:shadow-outline "
-              type="button">
+                    class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-12 rounded-lg focus:shadow-outline "
+                    type="button">
               Next
             </button>
           </div>
@@ -80,7 +81,8 @@
                      for="ward_id">
                 Ward
               </label>
-              <select name="ward" id="ward_id" class="block py-3 px-4 w-full bg-gray-200 text-gray-700 border-gray-200 border rounded py-3 px-4 focus:outline-none focus:border-0 focus:ring-0">
+              <select name="ward" id="ward_id"
+                      class="block py-3 px-4 w-full bg-gray-200 text-gray-700 border-gray-200 border rounded py-3 px-4 focus:outline-none focus:border-0 focus:ring-0">
                 <option value="">---------</option>
                 {% for ward in wards %}
                   <option value="{{ ward.id }}">{{ ward.name }}</option>
@@ -108,8 +110,8 @@
           </div>
           <div class="flex">
             <button id="prev_page"
-              class="border border-green-600 text-green-600 hover:text-white hover:bg-green-700 font-bold py-3 px-12 mr-2 rounded-lg focus:shadow-outline "
-              type="button">
+                    class="border border-green-600 text-green-600 hover:text-white hover:bg-green-700 font-bold py-3 px-12 mr-2 rounded-lg focus:shadow-outline "
+                    type="button">
               Previous
             </button>
             <button

@@ -11,9 +11,9 @@ class RedirectView(View):
             elif request.user.role == 'dist_admin':
                 return redirect('district_admin:home')
             elif request.user.role == 'sec_nurse':
-                pass
+                return redirect('health_center:home')
             elif request.user.role == 'pri_nurse':
-                pass
+                return redirect('health_center:home')
             else:
                 pass
         return redirect('users:login')

@@ -30,3 +30,23 @@ $("#ward_id").change(function() {
     });
 });
 
+$("#id_facility").change(function() {
+    var facility_id = $(this).val();
+    $.ajax({
+        url: '/district_admin/users/is_facility_chc/',
+        type: 'GET',
+        data: {
+            'facility': facility_id,
+        },
+        success: function(data) {
+            if (data === 'true'){
+                $("#id_role").children('option[value="pri_nurse"]').prop("disabled", true);
+                $("#id_role").children('option[value="sec_nurse"]').prop("disabled", false);
+            } else {
+                $("#id_role").children('option[value="pri_nurse"]').prop("disabled", false);
+                $("#id_role").children('option[value="sec_nurse"]').prop("disabled", true);
+            }
+        }
+    });
+});
+

@@ -1,0 +1,141 @@
+{% extends 'partials/dashboard/base.html' %}
+{% block title %}Patients - {{ request.user.get_role_display }}{% endblock %}
+{% block sidebar %}
+  {% include 'health_center/partials/sidebar.html' %}
+{% endblock %}
+{% block dashboard_content %}
+  <div class="flex flex-wrap justify-center">
+    <div class="flex w-full md:w-1/2">
+      <h2 class="text-4xl">Edit Family Member</h2>
+    </div>
+  </div>
+  <div class="flex my-8 justify-center">
+    <div class="w-full lg:w-1/2 md:w-9/12">
+      <form method="post">
+        {% csrf_token %}
+        {% if form.errors %}
+          {% for error in form.non_field_errors %}
+            <p> {{ error }} </p>
+          {% endfor %}
+        {% endif %}
+
+        <div class="grid lg:grid-cols-2 w-full mb-6 gap-2">
+          <div class="w-full mb-6 md:mb-0">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                   for="{{ form.full_name.id_for_label }}">
+              {{ form.full_name.label }}
+            </label>
+            {{ form.full_name }}
+            <p class="text-gray-500 my-2 mx-6">{{ form.full_name.errors }}</p>
+          </div>
+          <div class="w-full mb-6 md:mb-0">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                   for="{{ form.relationship.id_for_label }}">
+              {{ form.relationship.label }}
+            </label>
+            {{ form.relationship }}
+            <p class="text-gray-500 my-2 mx-6">{{ form.relationship.errors }}</p>
+          </div>
+          <div class="w-full mb-6 md:mb-0">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                   for="{{ form.date_of_birth.id_for_label }}">
+              {{ form.date_of_birth.label }}
+            </label>
+            <div class="relative">
+              {{ form.date_of_birth }}
+            </div>
+            <p class="text-gray-500 my-2 mx-6">{{ form.date_of_birth.errors }}</p>
+          </div>
+          <div class="w-full mb-6 md:mb-0">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                   for="{{ form.gender.id_for_label }}">
+              {{ form.gender.label }}
+            </label>
+            <div class="relative">
+              {{ form.gender }}
+            </div>
+            <p class="text-gray-500 my-2 mx-6">{{ form.gender.errors }}</p>
+          </div>
+          <div class="w-full mb-6 md:mb-0">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                   for="{{ form.phone.id_for_label }}">
+              {{ form.phone.label }}
+            </label>
+            <div class="relative">
+              {{ form.phone }}
+            </div>
+            <p class="text-gray-500 my-2 mx-6">{{ form.phone.errors }}</p>
+          </div>
+          <div class="w-full mb-6 md:mb-0">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                   for="{{ form.email.id_for_label }}">
+              {{ form.email.label }}
+            </label>
+            <div class="relative">
+              {{ form.email }}
+            </div>
+            <p class="text-gray-500 my-2 mx-6">{{ form.email.errors }}</p>
+          </div>
+          <div class="w-full mb-6 md:mb-0">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                   for="{{ form.education_level.id_for_label }}">
+              {{ form.education_level.label }}
+            </label>
+            <div class="relative">
+              {{ form.education_level }}
+            </div>
+            <p class="text-gray-500 my-2 mx-6">{{ form.education_level.errors }}</p>
+          </div>
+          <div class="w-full mb-6 md:mb-0">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                   for="{{ form.occupation.id_for_label }}">
+              {{ form.occupation.label }}
+            </label>
+            <div class="relative">
+              {{ form.occupation }}
+            </div>
+            <p class="text-gray-500 my-2 mx-6">{{ form.occupation.errors }}</p>
+          </div>
+          <div class="w-full mb-6 md:mb-0">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                   for="{{ form.landmark.id_for_label }}">
+              {{ form.landmark.label }}
+            </label>
+            <div class="relative">
+              {{ form.landmark }}
+            </div>
+            <p class="text-gray-500 my-2 mx-6">{{ form.landmark.errors }}</p>
+          </div>
+          <div class="w-full mb-6 md:mb-0 lg:col-span-2">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                   for="{{ form.address.id_for_label }}">
+              {{ form.address.label }}
+            </label>
+            <div class="relative">
+              {{ form.address }}
+            </div>
+            <p class="text-gray-500 my-2 mx-6">{{ form.address.errors }}</p>
+          </div>
+          <div class="w-full mb-6 md:mb-0 lg:col-span-2">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                   for="{{ form.remarks.id_for_label }}">
+              {{ form.remarks.label }}
+            </label>
+            <div class="relative">
+              {{ form.remarks }}
+            </div>
+            <p class="text-gray-500 my-2 mx-6">{{ form.remarks.errors }}</p>
+          </div>
+        </div>
+        <!-- submit button -->
+        <div class="flex">
+          <button
+            class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-12 rounded-lg focus:shadow-outline "
+            type="submit">
+            Edit
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

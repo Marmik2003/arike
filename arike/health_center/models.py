@@ -37,6 +37,7 @@ PALLIATIVE_PHASES = (
 SYSTEMIC_EXAMINATION_CHOICES = (
     ('cardiovascular', 'Cardiovascular'),
     ('gastrointestinal', 'Gastrointestinal'),
+    ('cns', 'Central Nervous System'),
     ('respiratory', 'Respiratory'),
     ('genitourinary', 'Genital-urinary'),
 )
@@ -70,13 +71,15 @@ class PatientFamilyMember(BaseModel):
     patient = models.ForeignKey('Patient', on_delete=models.PROTECT)
     full_name = models.CharField(max_length=150)
     date_of_birth = models.DateField()
+    gender = models.CharField(max_length=2, choices=GENDER_CHOICES)
     address = models.TextField()
     landmark = models.CharField(max_length=25)
     phone = models.CharField(max_length=15)
+    email = models.EmailField(null=True, blank=True)
     relationship = models.CharField(max_length=20, choices=PATIENT_RELATIONSHIPS)
     education_level = models.CharField(max_length=20)
     occupation = models.CharField(max_length=50)
-    remarks = models.TextField()
+    remarks = models.TextField(null=True, blank=True)
     is_primary = models.BooleanField(default=False)
 
     def __str__(self):
@@ -87,6 +90,7 @@ class PatientDisease(BaseModel):
     patient = models.ForeignKey('Patient', on_delete=models.PROTECT)
     disease = models.ForeignKey('Disease', on_delete=models.PROTECT)
     notes = models.TextField()
+    investigated_by = models.ForeignKey('users.User', on_delete=models.PROTECT, null=True, blank=True)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
@@ -106,7 +110,7 @@ class PatientVisitSchedule(BaseModel):
 
 class PatientVisitDetail(BaseModel):
     patient_visit_schedule = models.ForeignKey('PatientVisitSchedule', on_delete=models.PROTECT)
-    palliative_phase = models.CharField(max_length=12)
+    palliative_phase = models.CharField(max_length=12, choices=PALLIATIVE_PHASES)
     blood_pressure = models.CharField(max_length=10)
     pulse = models.IntegerField()
     general_random_blood_sugar = models.CharField(max_length=10)
@@ -116,7 +120,21 @@ class PatientVisitDetail(BaseModel):
     systemic_examination = models.CharField(max_length=20, choices=SYSTEMIC_EXAMINATION_CHOICES)
     patient_at_pease = models.BooleanField(default=False)
     pain = models.BooleanField(default=False)
-    symptoms = MultiSelectField(choices=(('fever', 'Fever'), ('cough', 'Cough'), ('sore_throat', 'Sore throat'),))
+    symptoms = MultiSelectField(
+        choices=(
+            ('fever', 'Fever'),
+            ('cough', 'Cough'),
+            ('sore_throat', 'Sore throat'),
+            ('headache', 'Headache'),
+            ('diarrhea', 'Diarrhea'),
+            ('vomiting', 'Vomiting'),
+            ('nausea', 'Nausea'),
+            ('abdominal_pain', 'Abdominal pain'),
+            ('chest_pain', 'Chest pain'),
+            ('shortness_of_breath', 'Shortness of breath'),
+            ('other', 'Other')
+        )
+    )
     notes = models.TextField()
 
     def __str__(self):

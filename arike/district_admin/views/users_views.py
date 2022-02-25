@@ -1,10 +1,10 @@
 from django.contrib.auth.hashers import make_password
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 
 from arike.district_admin.mixins import DistrictAdminRequiredMixin
-from arike.district_admin.models import Ward, Facility
+from arike.district_admin.models import Ward, Facility, FACILITY_KIND
 from arike.users.models import User, USER_ROLES
 from arike.district_admin.forms import UserForm
 
@@ -63,6 +63,7 @@ class CreateUserView(DistrictAdminRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.district = self.request.user.district
         form.instance.password = make_password('Arike@101#')
+
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
@@ -87,8 +88,12 @@ class UpdateUserView(DistrictAdminRequiredMixin, UpdateView):
         )
         return form
 
+    def get_queryset(self):
+        return User.objects.filter(district=self.request.user.district)
+
     def form_valid(self, form):
         form.instance.district = self.request.user.district
+
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
@@ -109,6 +114,9 @@ class DeleteUserView(DistrictAdminRequiredMixin, DeleteView):
         user.save()
         return HttpResponseRedirect(self.success_url)
 
+    def get_queryset(self):
+        return User.objects.filter(district=self.request.user.district)
+
 
 class DetailUserView(DistrictAdminRequiredMixin, DetailView):
     model = User
@@ -120,7 +128,7 @@ class DetailUserView(DistrictAdminRequiredMixin, DetailView):
 
 
 def get_facility_from_ward(request):
-    if request.user.is_authenticated and request.user.role == USER_ROLES[0][0]:
+    if request.user.is_authenticated:
         ward_id = request.GET.get('ward')
 
         if 'get_id' in request.GET:
@@ -130,6 +138,16 @@ def get_facility_from_ward(request):
             )
             return HttpResponse(
                 '<option value="">Select Facility</option>' +
+                ''.join(['<option value="{}">{}</option>'.format(f.id, f.name) for f in facilities])
+            )
+        elif 'get_chc' in request.GET:
+            facilities = Facility.objects.filter(
+                ward_id=ward_id,
+                ward__localbody__district=request.user.district,
+                kind=FACILITY_KIND[1][0]
+            )
+            return HttpResponse(
+                '<option value="">Select CHC</option>' +
                 ''.join(['<option value="{}">{}</option>'.format(f.id, f.name) for f in facilities])
             )
         else:
@@ -143,3 +161,13 @@ def get_facility_from_ward(request):
             )
     else:
         return HttpResponse('District Admin Only')
+
+
+def is_facility_chc(request):
+    if request.user.is_authenticated and request.user.role == USER_ROLES[0][0]:
+        facility_id = request.GET.get('facility')
+        facility = Facility.objects.get(id=facility_id)
+        if facility.kind == FACILITY_KIND[1][0]:
+            return HttpResponse('true')
+        else:
+            return HttpResponse('false')

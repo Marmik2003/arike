@@ -1,0 +1,117 @@
+{% extends 'partials/dashboard/base.html' %}
+{% block title %}Patients - {{ request.user.get_role_display }}{% endblock %}
+{% block sidebar %}
+  {% include 'health_center/partials/sidebar.html' %}
+{% endblock %}
+{% block dashboard_content %}
+  <div class="flex flex-wrap justify-center my-6">
+    <div class="flex w-full">
+      <h2 class="text-4xl">{{ patient.full_name }}</h2>
+    </div>
+  </div>
+  <div class="flex flex-wrap justify-between">
+    <div class="flex">
+      <h2 class="text-3xl">Personal Info</h2>
+    </div>
+    <div class="flex">
+      <a href="{% url 'health_center:patient_delete' patient.id %}"
+         class="text-red-600 border-2 border-red-600 px-3 py-2 rounded-md mr-2">Delete</a>
+
+      <a href="{% url 'health_center:patient_update' patient.id %}"
+         class="text-white bg-green-600 px-3 py-2 rounded-md">Edit</a>
+
+    </div>
+  </div>
+  <div class="grid lg:grid-cols-3 gap-3 my-6">
+    <div class="bg-slate-100 rounded-md w-full row-span-2 col-span-2 md:py-2">
+      <div class="py-4 px-3 md:px-8">
+        <h4 class="text-3xl">{{ patient.full_name }}</h4>
+        <p class="text-gray-600">
+          <span class="font-bold">Address:</span> {{ patient.address }}
+        </p>
+      </div>
+      <div class="py-0 pb-8">
+        <div class="grid md:grid-cols-2 gap-3 mt-6 border-t px-3 md:px-8 pt-6">
+          <div class="flex flex-col">
+            <p class="text-sm">
+              <span class="font-bold">
+                <span class="text-gray-700">Full Name:</span>
+              </span>
+              <span class="text-gray-600">{{ patient.full_name }}</span>
+            </p>
+          </div>
+          <div class="flex flex-col">
+            <p class="text-sm">
+              <span class="font-bold">
+                <span class="text-gray-700">Birth Date:</span>
+              </span>
+              <span class="text-gray-600">{{ patient.date_of_birth|date:"d/m/Y" }}</span>
+            </p>
+          </div>
+          <div class="flex flex-col">
+            <p class="text-sm">
+              <span class="font-bold">
+                <span class="text-gray-700">Gender: </span>
+              </span>
+              <span class="text-gray-600">{{ patient.get_gender_display }}</span>
+            </p>
+          </div>
+          <div class="flex flex-col">
+            <p class="text-sm">
+              <span class="font-bold">
+                <span class="text-gray-700">Phone Number: </span>
+              </span>
+              <span class="text-gray-600">{{ patient.phone }}</span>
+            </p>
+          </div>
+          <div class="flex flex-col">
+            <p class="text-sm">
+              <span class="font-bold">
+                <span class="text-gray-700">Emergency Phone Number: </span>
+              </span>
+              <span class="text-gray-600">{{ patient.emergency_phone_number }}</span>
+            </p>
+          </div>
+          <div class="flex flex-col">
+            <p class="text-sm">
+              <span class="font-bold">
+                <span class="text-gray-700">Landmark: </span>
+              </span>
+              <span class="text-gray-600">{{ patient.landmark }}</span>
+            </p>
+          </div>
+          {% if request.user.role == 'sec_nurse' %}
+            <div class="flex flex-col">
+              <p class="text-sm">
+              <span class="font-bold">
+                <span class="text-gray-700">Ward: </span>
+              </span>
+                <span class="text-gray-600">{{ patient.ward.name }}</span>
+              </p>
+            </div>
+            <div class="flex flex-col">
+              <p class="text-sm">
+              <span class="font-bold">
+                <span class="text-gray-700">Facility: </span>
+              </span>
+                <span class="text-gray-600">{{ patient.facility }}</span>
+              </p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="flex w-full h-full bg-slate-100 rounded-md px-3 md:px-6 py-6 items-center justify-center">
+      <h4 class="text-2xl items-center">Visits</h4>
+    </div>
+    <div class="flex w-full h-full bg-slate-100 rounded-md px-3 md:px-6 py-6 items-center justify-center">
+      <h4 class="text-2xl items-center">Treatments</h4>
+    </div>
+    <a href="{% url 'health_center:patient_family_list' patient.id %}" class="flex w-full h-full bg-slate-100 rounded-md px-3 md:px-6 py-6 items-center justify-center">
+        <h4 class="text-2xl items-center">Family Details</h4>
+    </a>
+    <a href="{% url 'health_center:patient_disease_list' patient.id %}" class="flex w-full h-full bg-slate-100 rounded-md px-3 md:px-6 py-6 items-center justify-center">
+      <h4 class="text-2xl items-center">Disease</h4>
+    </a>
+  </div>
+{% endblock %}

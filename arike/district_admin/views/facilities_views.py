@@ -44,6 +44,8 @@ class CreateFacilityView(DistrictAdminRequiredMixin, CreateView):
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
+        form.fields['chc'].queryset = Facility.objects.filter(
+            ward__localbody__district=self.request.user.district, kind='chc')
         form.fields['ward'].queryset = form.fields['ward'].queryset.filter(
             localbody__district=self.request.user.district
         )
@@ -62,6 +64,8 @@ class UpdateFacilityView(DistrictAdminRequiredMixin, UpdateView):
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
+        form.fields['chc'].queryset = Facility.objects.filter(
+            ward__localbody__district=self.request.user.district, kind='chc')
         form.fields['ward'].queryset = form.fields['ward'].queryset.filter(
             localbody__district=self.request.user.district
         )
@@ -70,6 +74,15 @@ class UpdateFacilityView(DistrictAdminRequiredMixin, UpdateView):
     def form_valid(self, form):
         form.instance.district = self.request.user.district
         return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['current_kind'] = self.get_object().kind
+        return context
+
+    def get_queryset(self):
+        queryset = self.model.objects.filter(ward__localbody__district=self.request.user.district)
+        return queryset
 
 
 class DeleteFacilityView(DistrictAdminRequiredMixin, DeleteView):
@@ -83,3 +96,6 @@ class DeleteFacilityView(DistrictAdminRequiredMixin, DeleteView):
         facility.deleted = True
         facility.save()
         return HttpResponseRedirect(self.success_url)
+
+    def get_queryset(self):
+        queryset = self.model.objects.filter(ward__localbody__district=self.request.user.district)

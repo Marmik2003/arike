@@ -12,6 +12,7 @@ urlpatterns = [
     # User management
     path("users/", include("arike.users.urls", namespace="users")),
     path("district_admin/", include("arike.district_admin.urls")),
+    path("health_center/", include("arike.health_center.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

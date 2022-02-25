@@ -1,0 +1,21 @@
+{% if is_paginated %}
+  <div class="flex flex-wrap w-full justify-between px-6 mb-6 mt-2">
+    <div class="flex w-1/2">
+      {% if page_obj.has_previous %}
+        <button onclick="changePage('{{ page_obj.previous_page_number }}')"
+                class="bg-green-600 text-white px-3 py-2 rounded-md">
+          <i class="fas fa-arrow-left"></i> Previous
+        </button>
+      {% endif %}
+    </div>
+    <div class="flex w-1/2 justify-end">
+      {% if page_obj.has_next %}
+        <button onclick="changePage('{{ page_obj.next_page_number }}')"
+                class="bg-green-600 text-white px-3 py-2 rounded-md">
+          Next <i class="fas fa-arrow-right"></i>
+        </button>
+      {% endif %}
+
+    </div>
+  </div>
+{% endif %}
