@@ -51,6 +51,13 @@ class Disease(models.Model):
         return self.name
 
 
+class Treatment(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+
 class Patient(BaseModel):
     full_name = models.CharField(max_length=150)
     date_of_birth = models.DateField()
@@ -101,8 +108,8 @@ class PatientVisitSchedule(BaseModel):
     patient = models.ForeignKey('Patient', on_delete=models.PROTECT)
     nurse = models.ForeignKey('users.User', on_delete=models.PROTECT)
     date = models.DateField()
-    time = models.TimeField()
     duration = models.IntegerField()
+    visited = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.date)
@@ -119,7 +126,6 @@ class PatientVisitDetail(BaseModel):
     public_hygiene = models.TextField()
     systemic_examination = models.CharField(max_length=20, choices=SYSTEMIC_EXAMINATION_CHOICES)
     patient_at_pease = models.BooleanField(default=False)
-    pain = models.BooleanField(default=False)
     symptoms = MultiSelectField(
         choices=(
             ('fever', 'Fever'),
@@ -139,3 +145,24 @@ class PatientVisitDetail(BaseModel):
 
     def __str__(self):
         return str(self.patient_visit_schedule.date)
+
+
+class PatientTreatment(BaseModel):
+    patient = models.ForeignKey('Patient', on_delete=models.PROTECT)
+    given_by = models.ForeignKey('users.User', on_delete=models.PROTECT, null=True, blank=True)
+    treatment = models.ForeignKey('Treatment', on_delete=models.PROTECT)
+    disease = models.ForeignKey('PatientDisease', on_delete=models.PROTECT, null=True, blank=False)
+    notes = models.TextField()
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.treatment.name
+
+
+class TreatmentNote(BaseModel):
+    patient_treatment = models.ForeignKey('PatientTreatment', on_delete=models.PROTECT)
+    nurse = models.ForeignKey('users.User', on_delete=models.PROTECT)
+    notes = models.TextField()
+
+    def __str__(self):
+        return str(self.notes)

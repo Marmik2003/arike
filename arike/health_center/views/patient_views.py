@@ -1,12 +1,16 @@
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 
-from arike.health_center.forms import PatientFamilyMemberForm, PatientForm, PatientDiseaseForm
-from arike.health_center.mixins import NurseRequiredMixin, PrimaryNurseRequiredMixin, SecondaryNurseRequiredMixin
-from arike.health_center.models import Patient, PatientDisease, PatientFamilyMember
+from arike.district_admin.models import Facility
+from arike.health_center.mixins import NurseRequiredMixin
+from arike.health_center.forms import PatientFamilyMemberForm, PatientForm, PatientDiseaseForm, PatientTreatmentForm, \
+    TreatmentNoteForm
+from arike.health_center.models import Patient, PatientFamilyMember, PatientDisease, PatientTreatment, TreatmentNote, \
+    PatientVisitSchedule, PatientVisitDetail
 
 
+# Patient Views
 class PatientListView(NurseRequiredMixin, ListView):
     model = Patient
     template_name = 'health_center/patients/patient_list.html'
@@ -24,7 +28,9 @@ class PatientListView(NurseRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['facilities'] = self.request.user.facility.phc_set.all()
+        if self.request.user.role == 'sec_nurse':
+            context['facilities'] = self.request.user.facility.phc_set.all()
+
         return context
 
     def get_queryset(self):
@@ -58,7 +64,7 @@ class PatientCreateView(NurseRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class PatientUpdateView(PrimaryNurseRequiredMixin, UpdateView):
+class PatientUpdateView(NurseRequiredMixin, UpdateView):
     model = Patient
     form_class = PatientForm
     success_url = reverse_lazy('health_center:patient_list')
@@ -133,6 +139,7 @@ class PatientDetailView(NurseRequiredMixin, DetailView):
             return Patient.objects.none()
 
 
+# Patient Family Views
 class PatientFamilyListView(NurseRequiredMixin, ListView):
     model = PatientFamilyMember
     template_name = 'health_center/patients/list_family_members.html'
@@ -147,7 +154,8 @@ class PatientFamilyListView(NurseRequiredMixin, ListView):
                 patient=patient,
             )
         elif self.request.user.role == 'sec_nurse':
-            facilities = self.request.user.facility.phc_set.all() | self.request.user.facility
+            facilities = self.request.user.facility.phc_set.all()\
+                         | Facility.objects.filter(id=self.request.user.facility.id)
             patient = Patient.objects.get(
                 id=self.kwargs['patient_id'],
                 facility__in=facilities,
@@ -207,6 +215,7 @@ class PatientFamilyDeleteView(NurseRequiredMixin, DeleteView):
         return reverse_lazy('health_center:patient_detail', kwargs={'pk': self.kwargs['patient_id']})
 
 
+# Patient Disease Views
 class PatientDiseaseListView(NurseRequiredMixin, ListView):
     model = PatientDisease
     template_name = 'health_center/patients/disease_list.html'
@@ -221,7 +230,8 @@ class PatientDiseaseListView(NurseRequiredMixin, ListView):
                 patient=patient,
             )
         elif self.request.user.role == 'sec_nurse':
-            facilities = self.request.user.facility.phc_set.all() | self.request.user.facility
+            facilities = self.request.user.facility.phc_set.all()\
+                         | Facility.objects.filter(id=self.request.user.facility.id)
             patient = Patient.objects.get(
                 id=self.kwargs['patient_id'],
                 facility__in=facilities,
@@ -275,7 +285,8 @@ class PatientDiseaseUpdateView(NurseRequiredMixin, UpdateView):
                 patient=patient,
             )
         elif self.request.user.role == 'sec_nurse':
-            facilities = self.request.user.facility.phc_set.all() | self.request.user.facility
+            facilities = self.request.user.facility.phc_set.all()\
+                         | Facility.objects.filter(id=self.request.user.facility.id)
             patient = Patient.objects.get(
                 id=self.kwargs['patient_id'],
                 facility__in=facilities,
@@ -313,10 +324,233 @@ class PatientDiseaseDeleteView(NurseRequiredMixin, DeleteView):
                 patient=patient,
             )
         elif self.request.user.role == 'sec_nurse':
-            facilities = self.request.user.facility.phc_set.all() | self.request.user.facility
+            facilities = self.request.user.facility.phc_set.all()\
+                         | Facility.objects.filter(id=self.request.user.facility.id)
             patient = Patient.objects.get(
                 id=self.kwargs['patient_id'],
                 facility__in=facilities,
             )
             return PatientDisease.objects.filter(patient=patient)
 
+
+# Patient Treatment Views
+class PatientTreatmentListView(NurseRequiredMixin, ListView):
+    model = PatientTreatment
+    template_name = 'health_center/patients/treatment_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['patient'] = Patient.objects.get(id=self.kwargs['patient_id'])
+        return context
+
+    def get_queryset(self):
+        if self.request.user.role == 'pri_nurse':
+            patient = Patient.objects.get(
+                id=self.kwargs['patient_id'],
+                facility=self.request.user.facility,
+            )
+            return PatientTreatment.objects.filter(
+                patient=patient,
+            )
+        elif self.request.user.role == 'sec_nurse':
+            facilities = self.request.user.facility.phc_set.all()\
+                         | Facility.objects.filter(id=self.request.user.facility.id)
+            patient = Patient.objects.get(
+                id=self.kwargs['patient_id'],
+                facility__in=facilities,
+            )
+            return PatientTreatment.objects.filter(patient=patient)
+
+
+class PatientTreatmentCreateView(NurseRequiredMixin, CreateView):
+    model = PatientTreatment
+    form_class = PatientTreatmentForm
+    template_name = 'health_center/patients/add_treatment.html'
+
+    def get_success_url(self):
+        return reverse_lazy('health_center:patient_detail', kwargs={'pk': self.kwargs['patient_id']})
+
+    def form_valid(self, form):
+        patient = Patient.objects.get(id=self.kwargs['patient_id'])
+        form.instance.patient = patient
+        form.instance.given_by = self.request.user
+        form.instance.is_active = True
+        return super().form_valid(form)
+
+
+class PatientTreatmentUpdateView(NurseRequiredMixin, UpdateView):
+    model = PatientTreatment
+    form_class = PatientTreatmentForm
+    template_name = 'health_center/patients/update_treatment.html'
+
+    def get_success_url(self):
+        return reverse_lazy('health_center:patient_detail', kwargs={'pk': self.kwargs['patient_id']})
+
+    def get_queryset(self):
+        if self.request.user.role == 'pri_nurse':
+            patient = Patient.objects.get(
+                id=self.kwargs['patient_id'],
+                facility=self.request.user.facility,
+            )
+            return PatientTreatment.objects.filter(
+                patient=patient,
+            )
+        elif self.request.user.role == 'sec_nurse':
+            facilities = self.request.user.facility.phc_set.all()\
+                         | Facility.objects.filter(id=self.request.user.facility.id)
+            patient = Patient.objects.get(
+                id=self.kwargs['patient_id'],
+                facility__in=facilities,
+            )
+            return PatientTreatment.objects.filter(patient=patient)
+
+
+class PatientTreatmentDeleteView(NurseRequiredMixin, DeleteView):
+    model = PatientTreatment
+    template_name = 'health_center/patients/delete_treatment.html'
+
+    def get_success_url(self):
+        return reverse_lazy('health_center:patient_detail', kwargs={'pk': self.kwargs['patient_id']})
+
+    def get_queryset(self):
+        if self.request.user.role == 'pri_nurse':
+            patient = Patient.objects.get(
+                id=self.kwargs['patient_id'],
+                facility=self.request.user.facility,
+            )
+            return PatientTreatment.objects.filter(
+                patient=patient,
+            )
+        elif self.request.user.role == 'sec_nurse':
+            facilities = self.request.user.facility.phc_set.all()\
+                         | Facility.objects.filter(id=self.request.user.facility.id)
+            patient = Patient.objects.get(
+                id=self.kwargs['patient_id'],
+                facility__in=facilities,
+            )
+            return PatientTreatment.objects.filter(patient=patient)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['patient'] = Patient.objects.get(id=self.kwargs['patient_id'])
+        return context
+
+
+class PatientTreatmentDetailView(NurseRequiredMixin, DetailView):
+    model = PatientTreatment
+    template_name = 'health_center/patients/detail_treatment.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['patient'] = Patient.objects.get(id=self.kwargs['patient_id'])
+        treatment = PatientTreatment.objects.get(id=self.kwargs['pk'])
+        context['treatment_notes'] = TreatmentNote.objects.filter(patient_treatment=treatment)
+        return context
+
+    def get_queryset(self):
+        if self.request.user.role == 'pri_nurse':
+            patient = Patient.objects.get(
+                id=self.kwargs['patient_id'],
+                facility=self.request.user.facility,
+            )
+            return PatientTreatment.objects.filter(
+                patient=patient,
+            )
+        elif self.request.user.role == 'sec_nurse':
+            facilities = self.request.user.facility.phc_set.all()\
+                         | Facility.objects.filter(id=self.request.user.facility.id)
+            patient = Patient.objects.get(
+                id=self.kwargs['patient_id'],
+                facility__in=facilities,
+            )
+            return PatientTreatment.objects.filter(patient=patient)
+
+
+class PatientTreatmentNoteCreateView(NurseRequiredMixin, CreateView):
+    model = TreatmentNote
+    form_class = TreatmentNoteForm
+    template_name = 'health_center/patients/create_treatment_note.html'
+
+    def get_success_url(self):
+        return reverse_lazy('health_center:patient_treatment_detail', kwargs={
+            'patient_id': self.kwargs['patient_id'],
+            'pk': self.kwargs['treatment_id'],
+        })
+
+    def form_valid(self, form):
+        treatment = PatientTreatment.objects.get(id=self.kwargs['treatment_id'])
+        form.instance.patient_treatment = treatment
+        form.instance.nurse = self.request.user
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['treatment'] = PatientTreatment.objects.get(id=self.kwargs['treatment_id'])
+        return context
+
+
+class PatientTreatmentNoteUpdateView(NurseRequiredMixin, UpdateView):
+    model = TreatmentNote
+    form_class = TreatmentNoteForm
+    template_name = 'health_center/patients/update_treatment_note.html'
+
+    def get_success_url(self):
+        return reverse_lazy('health_center:patient_treatment_detail', kwargs={
+            'patient_id': self.kwargs['patient_id'],
+            'pk': self.kwargs['treatment_id'],
+        })
+
+    def get_queryset(self):
+        if self.request.user.role == 'pri_nurse':
+            patient = Patient.objects.get(
+                id=self.kwargs['patient_id'],
+                facility=self.request.user.facility,
+            )
+            queryset = PatientTreatment.objects.filter(
+                patient=patient,
+            )
+        elif self.request.user.role == 'sec_nurse':
+            facilities = self.request.user.facility.phc_set.all()\
+                         | Facility.objects.filter(id=self.request.user.facility.id)
+            patient = Patient.objects.get(
+                id=self.kwargs['patient_id'],
+                facility__in=facilities,
+            )
+            queryset = PatientTreatment.objects.filter(patient=patient, given_by=self.request.user)
+        return TreatmentNote.objects.filter(patient_treatment__in=queryset)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['treatment'] = PatientTreatment.objects.get(id=self.kwargs['treatment_id'])
+        return context
+
+
+class PatientTreatmentNoteDeleteView(NurseRequiredMixin, DeleteView):
+    model = TreatmentNote
+    template_name = 'health_center/patients/delete_treatment_note.html'
+
+    def get_success_url(self):
+        return reverse_lazy('health_center:patient_treatment_detail', kwargs={
+            'patient_id': self.kwargs['patient_id'],
+            'pk': self.kwargs['treatment_id'],
+        })
+
+    def get_queryset(self):
+        if self.request.user.role == 'pri_nurse':
+            patient = Patient.objects.get(
+                id=self.kwargs['patient_id'],
+                facility=self.request.user.facility,
+            )
+            queryset = PatientTreatment.objects.filter(
+                patient=patient,
+            )
+        elif self.request.user.role == 'sec_nurse':
+            facilities = self.request.user.facility.phc_set.all()\
+                         | Facility.objects.filter(id=self.request.user.facility.id)
+            patient = Patient.objects.get(
+                id=self.kwargs['patient_id'],
+                facility__in=facilities,
+            )
+            queryset = PatientTreatment.objects.filter(patient=patient, given_by=self.request.user)
+
+        return TreatmentNote.objects.filter(patient_treatment__in=queryset)

@@ -1,6 +1,7 @@
 from django import forms
 
-from arike.health_center.models import Patient, PatientFamilyMember, PatientDisease
+from arike.health_center.models import Patient, PatientFamilyMember, PatientDisease, PatientTreatment, TreatmentNote, \
+    PatientVisitSchedule, PatientVisitDetail
 
 input_classes = ' '.join([
     'block py-3 px-4',
@@ -56,3 +57,67 @@ class PatientDiseaseForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].widget.attrs.update({'class': input_classes})
+
+
+class PatientTreatmentForm(forms.ModelForm):
+    class Meta:
+        model = PatientTreatment
+        fields = ['treatment', 'disease', 'notes', 'is_active']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({'class': input_classes})
+
+        self.fields['is_active'] = forms.BooleanField(
+            widget=forms.CheckboxInput(
+                attrs={
+                    'class': 'form-checkbox h-6 w-6 rounded text-green-500 border-0 bg-slate-100'
+                }
+            ),
+            required=False
+        )
+
+
+class TreatmentNoteForm(forms.ModelForm):
+    class Meta:
+        model = TreatmentNote
+        fields = ['notes']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({'class': input_classes})
+
+
+class PatientVisitScheduleForm(forms.ModelForm):
+    class Meta:
+        model = PatientVisitSchedule
+        fields = ['date', 'duration']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({'class': input_classes})
+
+
+class PatientVisitDetailForm(forms.ModelForm):
+    class Meta:
+        model = PatientVisitDetail
+        fields = [
+            'palliative_phase', 'blood_pressure', 'general_random_blood_sugar',
+            'pulse', 'personal_hygiene', 'mouth_hygiene', 'public_hygiene',
+            'systemic_examination', 'symptoms', 'notes', 'patient_at_pease'
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({'class': input_classes})
+        self.fields['patient_at_pease'] = forms.BooleanField(
+            widget=forms.CheckboxInput(
+                attrs={
+                    'class': 'form-checkbox h-6 w-6 rounded text-green-500 border-0 bg-slate-100'
+                }
+            )
+        )

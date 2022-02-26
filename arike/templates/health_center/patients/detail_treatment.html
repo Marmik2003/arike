@@ -1,0 +1,104 @@
+{% extends 'partials/dashboard/base.html' %}
+{% block title %}Patients - {{ request.user.get_role_display }}{% endblock %}
+{% block sidebar %}
+  {% include 'health_center/partials/sidebar.html' %}
+{% endblock %}
+{% block dashboard_content %}
+  <div class="md:w-10/12 mx-auto">
+    <div class="flex flex-wrap justify-between my-6">
+      <div class="flex">
+        <h2 class="text-3xl">Treatment</h2>
+      </div>
+    </div>
+    <div class="grid gap-3 my-6">
+      <div class="bg-slate-100 rounded-md w-full md:py-2">
+        <div class="flex flex-wrap justify-between my-6  px-4 items-center gap-3">
+          <div class="flex">
+            <div class="w-full">
+              <h2 class="text-xl">{{ patienttreatment.treatment }}</h2>
+              <p class="text-sm text-gray-500">
+                {{ patienttreatment.created_date|date:"d/m/Y" }}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="grid my-4 border-t px-4">
+          <div class="w-full md:py-2">
+            <p class="text-sm text-gray-500">
+              <span class="font-bold">Given by: </span>
+              {{ patienttreatment.given_by.get_full_name }}
+            </p>
+          </div>
+
+          {% if patienttreatment.notes %}
+            <div class="w-full md:py-2">
+              <p class="text-sm text-gray-500">
+                <span class="font-bold">Notes: </span>
+                {{ patienttreatment.notes }}
+              </p>
+            </div>
+          {% endif %}
+        </div>
+        <div class="flex justify-end px-6 py-4 pt-2">
+          <a href="{% url 'health_center:patient_treatment_note_create' patient.id patienttreatment.id %}"
+             class="text-white bg-green-600 px-3 py-2 rounded-md">Add Note</a>
+          {% if request.user == patienttreatment.given_by %}
+            <a href="{% url 'health_center:patient_treatment_update' patient.id patienttreatment.id %}"
+               class="text-white bg-blue-600 px-3 py-2 ml-2 rounded-md">Edit</a>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+    <div class="flex flex-wrap justify-between my-6">
+      <div class="flex">
+        <h2 class="text-3xl">Notes</h2>
+      </div>
+      <div class="flex">
+        <a href="{% url 'health_center:patient_treatment_note_create' patient.id patienttreatment.id %}"
+           class="text-white bg-green-600 px-3 py-2 rounded-md">Add</a>
+      </div>
+    </div>
+
+    <div class="grid gap-3 my-6">
+      {% for note in treatment_notes %}
+        <div class="bg-slate-100 rounded-md w-full md:py-2">
+          <div class="flex flex-wrap justify-between my-6  px-4 items-center gap-3">
+            <div class="flex">
+              <div class="w-full">
+                <h2 class="text-xl">Note by: {{ note.nurse.get_full_name }}</h2>
+                <p class="text-sm text-gray-500">
+                  {{ note.created_date|date:"d/m/Y" }}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="grid my-4 border-t px-4">
+            {% if note %}
+              <div class="w-full md:py-2">
+                <p class="text-sm text-gray-500">
+                  <span class="font-bold">Notes: </span>
+                  {{ note }}
+                </p>
+              </div>
+            {% endif %}
+          </div>
+          {% if note.nurse == request.user %}
+            <div class="flex justify-end px-6 py-4 pt-2">
+              <a href="{% url 'health_center:patient_treatment_note_update' patient.id patienttreatment.id note.id %}"
+                 class="text-white bg-blue-600 px-3 py-2 rounded-md mr-2">Edit</a>
+              <a href="{% url 'health_center:patient_treatment_note_delete' patient.id patienttreatment.id note.id %}"
+                 class="text-red-600 border-2 border-red-600 px-3 py-2 rounded-md">Delete</a>
+            </div>
+          {% endif %}
+        </div>
+      {% empty %}
+        <div class="w-full md:py-2">
+          <p class="text-3xl text-gray-500">
+            No Notes found
+          </p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

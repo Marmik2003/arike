@@ -15,6 +15,14 @@ from arike.health_center.views.patient_views import (
     PatientDiseaseCreateView,
     PatientDiseaseUpdateView,
     PatientDiseaseDeleteView,
+    PatientTreatmentListView,
+    PatientTreatmentCreateView,
+    PatientTreatmentUpdateView,
+    PatientTreatmentDeleteView,
+    PatientTreatmentDetailView,
+    PatientTreatmentNoteCreateView,
+    PatientTreatmentNoteUpdateView,
+    PatientTreatmentNoteDeleteView,
 )
 
 app_name = 'health_center'
@@ -77,5 +85,53 @@ urlpatterns += [
         'patients/<int:patient_id>/diseases/<int:pk>/delete/',
         PatientDiseaseDeleteView.as_view(),
         name='patient_disease_delete'
+    ),
+]
+
+# Patient Treatment Views
+urlpatterns += [
+    path(
+        'patients/<int:patient_id>/treatments/',
+        PatientTreatmentListView.as_view(),
+        name='patient_treatment_list'
+    ),
+    path(
+        'patients/<int:patient_id>/treatments/create/',
+        PatientTreatmentCreateView.as_view(),
+        name='patient_treatment_create'
+    ),
+    path(
+        'patients/<int:patient_id>/treatments/<int:pk>/update/',
+        PatientTreatmentUpdateView.as_view(),
+        name='patient_treatment_update'
+    ),
+    path(
+        'patients/<int:patient_id>/treatments/<int:pk>/delete/',
+        PatientTreatmentDeleteView.as_view(),
+        name='patient_treatment_delete'
+    ),
+    path(
+        'patients/<int:patient_id>/treatments/<int:pk>/',
+        PatientTreatmentDetailView.as_view(),
+        name='patient_treatment_detail'
+    ),
+]
+
+# Patient Treatment Note Views
+urlpatterns += [
+    path(
+        'patients/<int:patient_id>/treatments/<int:treatment_id>/notes/create/',
+        PatientTreatmentNoteCreateView.as_view(),
+        name='patient_treatment_note_create'
+    ),
+    path(
+        'patients/<int:patient_id>/treatments/<int:treatment_id>/notes/<int:pk>/update/',
+        PatientTreatmentNoteUpdateView.as_view(),
+        name='patient_treatment_note_update'
+    ),
+    path(
+        'patients/<int:patient_id>/treatments/<int:treatment_id>/notes/<int:pk>/delete/',
+        PatientTreatmentNoteDeleteView.as_view(),
+        name='patient_treatment_note_delete'
     ),
 ]

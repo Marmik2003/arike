@@ -1,0 +1,72 @@
+{% extends 'partials/dashboard/base.html' %}
+{% block title %}Patients - {{ request.user.get_role_display }}{% endblock %}
+{% block sidebar %}
+  {% include 'health_center/partials/sidebar.html' %}
+{% endblock %}
+{% block dashboard_content %}
+  <div class="flex flex-wrap justify-between my-6">
+    <div class="flex">
+      <h2 class="text-3xl">Active Treatments</h2>
+    </div>
+    <div class="flex">
+      <a href="{% url 'health_center:patient_treatment_create' patient.id %}"
+         class="text-white bg-green-600 px-3 py-2 rounded-md">Add</a>
+    </div>
+  </div>
+  <div class="flex flex-wrap my-6">
+    <div class="w-full lg:w-9/12">
+      <h4 class="text-xl">{{ patient.full_name }}</h4>
+      <p class="text-sm text-gray-500">
+        <span class="font-bold">Address: </span>
+        {{ patient.address }}
+      </p>
+    </div>
+  </div>
+  <div class="grid gap-3 my-6">
+    {% for treatment in patienttreatment_list %}
+      <div class="bg-slate-100 rounded-md w-full md:py-2">
+        <div class="flex flex-wrap justify-between my-6  px-4 items-center gap-3">
+          <div class="flex">
+            <div class="w-full">
+              <h2 class="text-xl">{{ treatment.treatment }}</h2>
+              <p class="text-sm text-gray-500">
+                {{ treatment.created_date|date:"d/m/Y" }}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="grid my-4 border-t px-4">
+          <div class="w-full md:py-2">
+            <p class="text-sm text-gray-500">
+              <span class="font-bold">Given by: </span>
+              {{ treatment.given_by.get_full_name }}
+            </p>
+          </div>
+
+          {% if treatment.notes %}
+            <div class="w-full md:py-2">
+              <p class="text-sm text-gray-500">
+                <span class="font-bold">Notes: </span>
+                {{ treatment.notes }}
+              </p>
+            </div>
+          {% endif %}
+        </div>
+        <div class="flex justify-end px-6 py-4 pt-2">
+          <a href="{% url 'health_center:patient_treatment_detail' patient.id treatment.id %}"
+             class="text-white bg-blue-600 px-3 py-2 rounded-md mr-2">View</a>
+          <a href="{% url 'health_center:patient_treatment_note_create' patient.id treatment.id %}"
+             class="text-white bg-blue-600 px-3 py-2 rounded-md">Add Note</a>
+        </div>
+      </div>
+    {% empty %}
+      <div class="w-full md:py-2">
+        <p class="text-3xl text-gray-500">
+          No Treatments found
+        </p>
+      </div>
+    {% endfor %}
+
+
+  </div>
+{% endblock %}
