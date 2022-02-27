@@ -1,6 +1,6 @@
 from django.urls import path
 
-from arike.health_center.views.common_views import HomeView
+from arike.health_center.views.common_views import HomeView, ProfileView
 from arike.health_center.views.patient_views import (
     PatientListView,
     PatientCreateView,
@@ -38,6 +38,7 @@ app_name = 'health_center'
 
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
+    path('profile/', ProfileView.as_view(), name='profile'),
 ]
 
 # Patient Views

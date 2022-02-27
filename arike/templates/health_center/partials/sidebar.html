@@ -20,6 +20,28 @@
   </li>
 {% endif %}
 
+{% if 'profile/' in request.path %}
+  <li class="md:border-white items-center border-l-4 pl-2 border-green-500">
+    <a
+      href="#"
+      class="md:text-white text-xs py-3 font-bold block text-green-500"
+    >
+      <i class="fas fa-user-edit mr-2 text-sm"></i>
+      Profile
+    </a>
+  </li>
+{% else %}
+  <li class="items-center pl-3">
+    <a
+      href="{% url 'health_center:profile' %}"
+      class="text-xs py-3 font-bold block"
+    >
+      <i class="fas fa-user-edit mr-2 text-sm"></i>
+      Profile
+    </a>
+  </li>
+{% endif %}
+
 {% if 'patients/' in request.path %}
   <li class="md:border-white items-center border-l-4 pl-2 border-green-500">
     <a

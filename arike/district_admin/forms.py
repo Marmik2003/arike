@@ -13,6 +13,70 @@ input_classes = ' '.join([
 ])
 
 
+class ProfileForm(forms.ModelForm):
+    old_password = forms.CharField(
+        label='Old password',
+        widget=forms.PasswordInput(
+            attrs={
+                'class': input_classes,
+                'placeholder': 'Old password',
+            }
+        ),
+        required=False,
+    )
+    new_password = forms.CharField(
+        label='New password',
+        widget=forms.PasswordInput(
+            attrs={
+                'class': input_classes,
+                'placeholder': 'New password',
+            }
+        ),
+        required=False,
+    )
+    confirm_password = forms.CharField(
+        label='Confirm password',
+        widget=forms.PasswordInput(
+            attrs={
+                'class': input_classes,
+                'placeholder': 'Confirm password',
+            }
+        ),
+        required=False,
+    )
+
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'email', 'phone_number')
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': input_classes}),
+            'last_name': forms.TextInput(attrs={'class': input_classes}),
+            'email': forms.TextInput(attrs={'class': input_classes}),
+            'phone_number': forms.TextInput(attrs={'class': input_classes}),
+        }
+
+    def clean_old_password(self):
+        old_password = self.cleaned_data.get('old_password')
+        if not self.instance.check_password(old_password) and old_password:
+            raise forms.ValidationError('Old password is incorrect')
+        return old_password
+
+    def clean_confirm_password(self):
+        new_password = self.cleaned_data.get('new_password')
+        confirm_password = self.cleaned_data.get('confirm_password')
+        if new_password != confirm_password:
+            raise forms.ValidationError('Passwords do not match')
+        return confirm_password
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        if self.cleaned_data.get('old_password'):
+            user.set_password(self.cleaned_data['new_password'])
+        if commit:
+            user.save()
+        return user
+
+
 class FacilityForm(forms.ModelForm):
     class Meta:
         model = Facility

@@ -1,0 +1,99 @@
+{% extends 'partials/dashboard/base.html' %}
+{% block title %}Profile - District Admin{% endblock %}
+{% block sidebar %}
+  {% include 'district_admin/partials/sidebar.html' %}
+{% endblock %}
+{% block dashboard_content %}
+  <div class="justify-center lg:w-1/2 mx-auto">
+    <div
+      class="font-bold text-white text-3xl w-min rounded-full bg-gray-700 flex items-center justify-center font-mono mx-auto"
+      style="width: 70px; height: 70px">
+      {{ request.user.first_name.0 }}
+    </div>
+    <div class=" text-2xl font-bold mx-auto mt-4 flex justify-center">
+      {{ request.user.first_name }} {{ request.user.last_name }}
+    </div>
+    <div class="text-white text-sm bg-gray-600 font-bold mx-auto w-32 rounded-full mb-4 flex justify-center">
+      {{ request.user.get_role_display }}
+    </div>
+    <div class="flex my-2">
+      <h3 class="text-3xl">Profile</h3>
+    </div>
+    <form method="post">
+      {% csrf_token %}
+      <div class="grid w-full lg:grid-cols-2 gap-3">
+        <div class="w-full mb-6 md:mb-0">
+          <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                 for="{{ form.first_name.id_for_label }}">
+            {{ form.first_name.label }}
+          </label>
+          {{ form.first_name }}
+          <p class="text-gray-500 my-2 mx-6">{{ form.first_name.errors }}</p>
+        </div>
+        <div class="w-full mb-6 md:mb-0">
+          <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                 for="{{ form.last_name.id_for_label }}">
+            {{ form.last_name.label }}
+          </label>
+          {{ form.last_name }}
+          <p class="text-gray-500 my-2 mx-6">{{ form.last_name.errors }}</p>
+        </div>
+        <div class="w-full mb-6 md:mb-0">
+          <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                 for="{{ form.email.id_for_label }}">
+            {{ form.email.label }}
+          </label>
+          {{ form.email }}
+          <p class="text-gray-500 my-2 mx-6">{{ form.email.errors }}</p>
+        </div>
+        <div class="w-full mb-6 md:mb-0">
+          <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                 for="{{ form.phone_number.id_for_label }}">
+            {{ form.phone_number.label }}
+          </label>
+          {{ form.phone_number }}
+          <p class="text-gray-500 my-2 mx-6">{{ form.phone_number.errors }}</p>
+        </div>
+      </div>
+
+      <div class="my-4"></div>
+
+      <div class="flex my-2">
+        <h3 class="text-3xl">Password</h3>
+      </div>
+      <div class="grid w-full lg:grid-cols-3 gap-3">
+        <div class="w-full mb-6 md:mb-0">
+          <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                 for="{{ form.old_password.id_for_label }}">
+            {{ form.old_password.label }}
+          </label>
+          {{ form.old_password }}
+          <p class="text-gray-500 my-2 mx-6">{{ form.old_password.errors }}</p>
+        </div>
+        <div class="w-full mb-6 md:mb-0">
+          <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                 for="{{ form.new_password.id_for_label }}">
+            {{ form.new_password.label }}
+          </label>
+          {{ form.new_password }}
+          <p class="text-gray-500 my-2 mx-6">{{ form.new_password.errors }}</p>
+        </div>
+        <div class="w-full mb-6 md:mb-0">
+          <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                 for="{{ form.confirm_password.id_for_label }}">
+            {{ form.confirm_password.label }}
+          </label>
+          {{ form.confirm_password }}
+          <p class="text-gray-500 my-2 mx-6">{{ form.confirm_password.errors }}</p>
+        </div>
+      </div>
+      <div class="flex justify-end">
+        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+          Save
+        </button>
+      </div>
+    </form>
+
+
+  </div>
+{% endblock %}

@@ -4,6 +4,16 @@ from django import forms
 from arike.users.models import User
 
 
+input_classes = ' '.join([
+    'block py-3 px-4',
+    'w-full',
+    'bg-gray-200 text-gray-700 border-gray-200',
+    'border rounded',
+    'py-3 px-4',
+    'focus:outline-none focus:border-0 focus:ring-0',
+])
+
+
 class UserLoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super(UserLoginForm, self).__init__(*args, **kwargs)
@@ -62,3 +72,29 @@ class UserChangeForm(forms.ModelForm):
 
     def clean_password(self):
         return self.initial["password"]
+
+
+class PasswordChangeForm(forms.Form):
+    password1 = forms.CharField(
+        label="New password",
+        widget=forms.PasswordInput(attrs={'autofocus': True, 'class': input_classes}),
+        strip=False,
+    )
+    password2 = forms.CharField(
+        label="Confirm password",
+        strip=False,
+        widget=forms.PasswordInput(attrs={'class': input_classes}),
+    )
+
+    error_messages = {
+        'password_mismatch': "The two password fields didn't match.",
+    }
+
+    def clean(self):
+        password1 = self.cleaned_data.get('password1')
+        password2 = self.cleaned_data.get('password2')
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError(
+                self.error_messages['password_mismatch'],
+                code='password_mismatch',
+            )

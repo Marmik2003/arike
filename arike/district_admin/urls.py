@@ -1,5 +1,5 @@
 from django.urls import path
-from arike.district_admin.views.home_views import HomeView
+from arike.district_admin.views.home_views import HomeView, ProfileView
 from arike.district_admin.views.facilities_views import (
     AllFacilitiesView,
     CreateFacilityView,
@@ -20,6 +20,7 @@ app_name = 'district_admin'
 
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
+    path('profile/', ProfileView.as_view(), name='profile'),
 ]
 
 # Facilities
