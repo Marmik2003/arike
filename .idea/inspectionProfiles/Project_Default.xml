@@ -65,6 +65,7 @@
           <option value="django.contrib.auth.models.User.district" />
           <option value="django.contrib.auth.models.User.facility" />
           <option value="django.contrib.auth.models.User.role" />
+          <option value="arike.users.tasks.send_relative_report.delay" />
         </list>
       </option>
     </inspection_tool>

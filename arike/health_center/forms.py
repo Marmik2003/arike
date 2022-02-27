@@ -1,8 +1,9 @@
 from django import forms
+from django.db import transaction
 
 from arike.health_center.models import Patient, PatientFamilyMember, PatientDisease, PatientTreatment, TreatmentNote, \
     PatientVisitSchedule, PatientVisitDetail
-from arike.users.tasks import User
+from arike.users.tasks import User, NurseReportSetting
 
 
 input_classes = ' '.join([
@@ -46,6 +47,27 @@ class ProfileForm(forms.ModelForm):
         ),
         required=False,
     )
+    enable_email_report = forms.BooleanField(
+        label='Enable email report',
+        widget=forms.CheckboxInput(
+            attrs={
+                'class': 'form-checkbox h-6 w-6 rounded text-green-500 border-0 bg-slate-100'
+            }
+        ),
+        required=False,
+    )
+
+    report_time = forms.TimeField(
+        label='Report time',
+        widget=forms.TimeInput(
+            attrs={
+                'class': input_classes,
+                'placeholder': 'Report time',
+                'type': 'time',
+            },
+        ),
+        required=False,
+    )
 
     class Meta:
         model = User
@@ -70,12 +92,29 @@ class ProfileForm(forms.ModelForm):
             raise forms.ValidationError('Passwords do not match')
         return confirm_password
 
+    def clean_report_time(self):
+        report_time = self.cleaned_data.get('report_time')
+        enable_email_report = self.cleaned_data.get('enable_email_report')
+        if report_time and enable_email_report:
+            report_time = report_time.strftime('%H:%M')
+        return report_time
+
     def save(self, commit=True):
         user = super().save(commit=False)
         if self.cleaned_data.get('old_password'):
             user.set_password(self.cleaned_data['new_password'])
         if commit:
-            user.save()
+            if self.cleaned_data.get('report_time', None):
+                with transaction.atomic():
+                    user.save()
+                    report, created = NurseReportSetting.objects.get_or_create(
+                        nurse=user,
+                    )
+                    report.is_report_enabled = self.cleaned_data.get('enable_email_report')
+                    report.report_time = self.cleaned_data.get('report_time')
+                    report.save()
+            else:
+                user.save()
         return user
 
 

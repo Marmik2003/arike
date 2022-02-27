@@ -54,6 +54,22 @@
           {{ form.phone_number }}
           <p class="text-gray-500 my-2 mx-6">{{ form.phone_number.errors }}</p>
         </div>
+        <div class="w-full mb-6 md:mb-0">
+          <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                 for="{{ form.enable_email_report.id_for_label }}">
+            {{ form.enable_email_report.label }}
+          </label>
+          {{ form.enable_email_report }}
+          <p class="text-gray-500 my-2 mx-6">{{ form.enable_email_report.errors }}</p>
+        </div>
+        <div class="w-full mb-6 md:mb-0">
+          <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                 for="{{ form.report_time.id_for_label }}">
+            {{ form.report_time.label }}
+          </label>
+          {{ form.report_time }}
+          <p class="text-gray-500 my-2 mx-6">{{ form.report_time.errors }}</p>
+        </div>
       </div>
 
       <div class="my-4"></div>

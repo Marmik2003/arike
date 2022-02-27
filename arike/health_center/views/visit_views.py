@@ -7,6 +7,7 @@ from arike.district_admin.models import Facility
 from arike.health_center.mixins import NurseRequiredMixin
 from arike.health_center.forms import *
 from arike.health_center.models import PatientVisitSchedule, PatientVisitDetail
+from arike.users.tasks import send_relative_report
 
 
 class ScheduledVisitListView(NurseRequiredMixin, TemplateView):
@@ -100,7 +101,8 @@ class VisitDetailsCreateView(NurseRequiredMixin, CreateView):
         visit_schedule = PatientVisitSchedule.objects.get(id=self.kwargs['pk'])
         form.instance.patient_visit_schedule = visit_schedule
         visit_schedule.visited = True
-        visit_schedule.save()
+        visit = visit_schedule.save()
+        send_relative_report.delay(visit.id)
         return super().form_valid(form)
 
 

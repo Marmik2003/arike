@@ -1,5 +1,5 @@
 import logging
-from datetime import timedelta, datetime, time
+from datetime import timedelta
 
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
@@ -7,11 +7,10 @@ from django.db import transaction
 from django.template.loader import render_to_string
 from django.utils import timezone
 
+from arike.health_center.models import Patient, PatientTreatment, TreatmentNote, PatientDisease, PatientVisitSchedule, \
+    PatientVisitDetail
 from arike.users.models import NurseReportSetting
-from arike.health_center.models import Patient, PatientTreatment, TreatmentNote, PatientDisease, PatientVisitSchedule
-
 from config import celery_app
-
 
 logger = logging.getLogger(__name__)
 User = get_user_model()
@@ -60,3 +59,34 @@ def send_daily_report():
             report.last_sent_report_time = today
             report.save()
             logger.info(f"Daily report sent to {user.email}")
+
+
+def send_relative_report(patient_id, visit_id):
+    """Celery task that sends relative report to nurse."""
+    with transaction.atomic():
+        visit = PatientVisitDetail.objects.get(id=visit_id)
+        patient = visit.patient_visit_schedule.patient
+        palliative_phase = visit.get_palliative_phase_display()
+        sugar = visit.general_random_blood_sugar
+        pulse = visit.pulse
+        blood_pressure = visit.blood_pressure
+        notes = visit.notes
+        context = {
+            'date': visit.created_date.date().strftime("%d/%m/%Y"),
+            'palliative_phase': palliative_phase,
+            'sugar': sugar,
+            'pulse': pulse,
+            'blood_pressure': blood_pressure,
+            'notes': notes,
+        }
+        relatives = patient.patientfamilymember_set.all()
+        for relative in relatives:
+            relative_email = relative.email
+            if relative_email:
+                send_mail(
+                    "Arike - Patient Visit Details",
+                    render_to_string('email_templates/relative_report.html', context),
+                    "marmik@thedataboy.com",
+                    [patient.nurse.email]
+                )
+                logger.info(f"Relative report sent to {patient.nurse.email}")

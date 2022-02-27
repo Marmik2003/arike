@@ -76,10 +76,11 @@ class NurseReportSetting(models.Model):
     last_sent_report_time = models.DateTimeField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        if self.last_sent_report_time is None:
+        if self.last_sent_report_time is None and self.is_report_enabled and self.report_time is not None:
+            report_time = datetime.datetime.strptime(str(self.report_time), '%H:%M').time()
             self.last_sent_report_time = timezone.now().replace(
-                hour=self.report_time.hour,
-                minute=self.report_time.minute
+                hour=report_time.hour,
+                minute=report_time.minute
             ) - datetime.timedelta(days=1)
         obj = super().save(*args, **kwargs)
         return obj
