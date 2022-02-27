@@ -1,0 +1,58 @@
+{% extends 'partials/dashboard/base.html' %}
+{% block title %}Schedule - {{ request.user.get_role_display }}{% endblock %}
+{% block sidebar %}
+  {% include 'health_center/partials/sidebar.html' %}
+{% endblock %}
+{% block dashboard_content %}
+  <div class="flex flex-wrap justify-between my-6">
+    <div class="flex">
+      <h2 class="text-4xl">Visit History</h2>
+    </div>
+    <div class="flex">
+      <a href="{% url 'health_center:schedule_create' patient.id %}"
+         class="text-white bg-green-600 px-3 py-2 rounded-md">Schedule</a>
+
+    </div>
+  </div>
+  <div class="flex flex-wrap my-6">
+    <div class="w-full lg:w-9/12">
+      <h4 class="text-2xl">{{ patient.full_name }}</h4>
+      <p class="text-sm text-gray-500">
+        <span class="font-bold">Address: </span>
+        {{ patient.address }}
+      </p>
+    </div>
+  </div>
+  <div class="grid lg:grid-cols-2 gap-3 my-6">
+    {% for visit in patientvisitschedule_list %}
+      <div class="bg-slate-100 rounded-md w-full md:py-2">
+        <div class="grid md:grid-cols-2 my-4 px-4">
+          <div class="w-full md:py-2">
+            <p class="text-sm text-gray-500">
+              <span class="font-bold">Visit by: </span>
+              {{ visit.nurse.get_full_name }}
+            </p>
+          </div>
+          <div class="w-full md:py-2">
+            <p class="text-sm text-gray-500">
+              <span class="font-bold">Visit Date: </span>
+              {{ visit.date|date:"d/m/Y" }}
+            </p>
+          </div>
+        </div>
+        <div class="flex px-6 py-4 pt-2">
+          <a href="{% url 'health_center:visit_detail' patient.id visit.id %}"
+             class="text-white bg-green-600 px-3 py-2 rounded-md">View details</a>
+        </div>
+      </div>
+    {% empty %}
+      <div class="w-full md:py-2">
+        <p class="text-3xl text-gray-500">
+          No Visits found
+        </p>
+      </div>
+    {% endfor %}
+
+
+  </div>
+{% endblock %}

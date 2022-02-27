@@ -1,5 +1,6 @@
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 
 from arike.district_admin.models import Facility
@@ -552,5 +553,34 @@ class PatientTreatmentNoteDeleteView(NurseRequiredMixin, DeleteView):
                 facility__in=facilities,
             )
             queryset = PatientTreatment.objects.filter(patient=patient, given_by=self.request.user)
+        else:
+            queryset = PatientTreatment.objects.none()
 
         return TreatmentNote.objects.filter(patient_treatment__in=queryset)
+
+
+# Patient Visit Views
+class PatientVisitListView(NurseRequiredMixin, ListView):
+    model = PatientVisitSchedule
+    template_name = 'health_center/patients/patient_visit_history.html'
+
+    def get_queryset(self):
+        schedules = PatientVisitSchedule.objects.filter(
+            patient=Patient.objects.get(id=self.kwargs['patient_id']),
+            visited=True,
+        )
+        if self.request.user.role == 'pri_nurse':
+            return  schedules.filter(
+                patient__facility=self.request.user.facility,
+            )
+        elif self.request.user.role == 'sec_nurse':
+            facilities = self.request.user.facility.phc_set.all()\
+                                     | Facility.objects.filter(id=self.request.user.facility.id)
+            return schedules.filter(
+                patient__facility__in=facilities,
+            )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['patient'] = Patient.objects.get(id=self.kwargs['patient_id'])
+        return context

@@ -1,0 +1,96 @@
+{% extends 'partials/dashboard/base.html' %}
+{% block title %}Schedule - {{ request.user.get_role_display }}{% endblock %}
+{% block sidebar %}
+  {% include 'health_center/partials/sidebar.html' %}
+{% endblock %}
+{% block dashboard_content %}
+  <div class="flex flex-wrap justify-center">
+    <div class="flex w-full lg:w-10/12">
+      <h2 class="text-4xl">Visit Details</h2>
+    </div>
+  </div>
+  <div class="flex flex-wrap my-6">
+    <div class="w-full lg:w-10/12">
+      <h4 class="text-2xl">{{ patient.full_name }}</h4>
+      <p class="text-sm text-gray-500">
+        <span class="font-bold">Address: </span>
+        {{ patient.address }}
+      </p>
+    </div>
+  </div>
+  <div class="lg:w-10/12 mx-auto">
+    <div class="flex flex-wrap justify-between my-6">
+      <div class="flex">
+        <h2 class="text-3xl">Health Information</h2>
+      </div>
+    </div>
+    <div class="grid gap-3 my-6">
+      <div class="bg-slate-100 rounded-md w-full md:py-2">
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 my-4 px-4">
+          <div class="w-full md:py-2">
+            <p class="text-sm text-gray-500">
+              <span class="font-bold">Palliative phase: </span>
+              {{ patientvisitdetail.get_palliative_phase_display }}
+            </p>
+          </div>
+          <div class="w-full md:py-2">
+            <p class="text-sm text-gray-500">
+              <span class="font-bold">Blood Pressure: </span>
+              {{ patientvisitdetail.blood_pressure }}
+            </p>
+          </div>
+          <div class="w-full md:py-2">
+            <p class="text-sm text-gray-500">
+              <span class="font-bold">Pulse: </span>
+              {{ patientvisitdetail.pulse }}
+            </p>
+          </div>
+          <div class="w-full md:py-2">
+            <p class="text-sm text-gray-500">
+              <span class="font-bold">Blood Sugar: </span>
+              {{ patientvisitdetail.general_random_blood_sugar }}
+            </p>
+          </div>
+          <div class="w-full md:py-2">
+            <p class="text-sm text-gray-500">
+              <span class="font-bold">Patient at pease: </span>
+              {% if patientvisitdetail.patient_at_pease %}Yes{% else %}No{% endif %}
+            </p>
+          </div>
+          <div class="w-full md:py-2">
+            <p class="text-sm text-gray-500">
+              <span class="font-bold">Symptoms: </span>
+              {{ patientvisitdetail.symptoms }}
+            </p>
+          </div>
+          {% if patientvisitdetail.personal_hygiene %}
+            <div class="w-full md:py-2">
+              <p class="text-sm text-gray-500">
+                <span class="font-bold">Personal Hygiene: </span>
+                {{ patientvisitdetail.personal_hygiene }}
+              </p>
+            </div>
+          {% endif %}
+          {% if patientvisitdetail.mouth_hygiene %}
+            <div class="w-full md:py-2">
+              <p class="text-sm text-gray-500">
+                <span class="font-bold">Mouth Hygiene: </span>
+                {{ patientvisitdetail.mouth_hygiene }}
+              </p>
+            </div>
+          {% endif %}
+          {% if patientvisitdetail.notes %}
+            <div class="w-full md:py-2">
+              <p class="text-sm text-gray-500">
+                <span class="font-bold">Notes: </span>
+                {{ patientvisitdetail.notes }}
+              </p>
+            </div>
+          {% endif %}
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+{% endblock %}

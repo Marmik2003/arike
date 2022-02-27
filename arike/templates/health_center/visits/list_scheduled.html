@@ -1,0 +1,148 @@
+{% extends 'partials/dashboard/base.html' %}
+{% load static %}
+{% block title %}Schedule - {{ request.user.get_role_display }}{% endblock %}
+{% block sidebar %}
+  {% include 'health_center/partials/sidebar.html' %}
+{% endblock %}
+{% block dashboard_content %}
+  <div class="flex flex-wrap justify-between">
+    <div class="flex">
+      <h2 class="text-3xl">Schedule</h2>
+    </div>
+  </div>
+  <div class="container my-8">
+    {% if request.user.role == 'sec_nurse' %}
+      <div class="bg-slate-100 p-4 rounded-xl mt-4 md:w-1/2">
+        <div class="flex flex-wrap">
+          <h4 class="text-2xl px-3">Filters</h4>
+        </div>
+        <form method="get" id="filter_form">
+          <div class="flex flex-wrap w-full md:py-6 pt-6 pb-0">
+            <div class="w-full px-3 mb-6 md:mb-1">
+              <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="input-facility">
+                Facility
+              </label>
+              <select
+                class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded focus:outline-none focus:border-0"
+                id="input-facility">
+                <option value="">---------</option>
+                {% for facility in facilities %}
+                  <option value="{{ facility.name }}"
+                          {% if facility.name == request.GET.facility %}selected{% endif %}>{{ facility.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="flex flex-wrap w-full px-3">
+            <button type="submit" class="text-white bg-green-600 px-3 py-2 rounded-md">Apply</button>
+          </div>
+        </form>
+      </div>
+    {% endif %}
+  </div>
+  {% if not no_visits %}
+    <h4 class="text-xl text-gray-500">Today</h4>
+    <div class="grid-cols-1 lg:grid-cols-3 grid w-full my-8 gap-2">
+      {% for visit in today_visits %}
+        <!-- User card -->
+        <div class="w-full py-6 bg-slate-100 rounded-xl">
+          <div class="px-12 py-4">
+            <h4 class="text-3xl">{{ visit.patient.full_name }}</h4>
+            <p class="text-sm font-bold text-gray-500">
+              Phone: <span class="text-gray-500 font-normal">{{ visit.patient.phone }}</span>
+            </p>
+          </div>
+
+          <div class="py-2 px-12">
+            <div class="flex justify-end pt-6">
+              <a href="{% url 'health_center:unschdule_visit' visit.id %}"
+                 class="text-sm text-red-600 border-2 border-red-600 px-3 py-2 rounded-md mr-2">Unschedule</a>
+              <a href="{% url 'health_center:visit_add' visit.id %}"
+                 class="text-sm text-white bg-green-600 px-3 py-2 rounded-md">Visit</a>
+            </div>
+          </div>
+        </div>
+        <!-- End User card -->
+      {% empty %}
+        <div class="w-full col-span-3 py-6 bg-slate-100 rounded-xl">
+          <div class="px-12 py-4">
+            <h4 class="text-3xl">No visits today</h4>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <h4 class="text-xl text-gray-500 mt-6">Tomorrow</h4>
+    <div class="grid-cols-1 lg:grid-cols-3 grid w-full my-8 gap-2">
+      {% for visit in tomorrow_visits %}
+        <!-- User card -->
+        <div class="w-full py-6 bg-slate-100 rounded-xl">
+          <div class="px-12 py-4">
+            <h4 class="text-3xl">{{ visit.patient.full_name }}</h4>
+            <p class="text-sm font-bold text-gray-500">
+              Phone: <span class="text-gray-500 font-normal">{{ visit.patient.phone }}</span>
+            </p>
+          </div>
+
+          <div class="py-2 px-12">
+            <div class="flex justify-end pt-6">
+              <a href="{% url 'health_center:unschdule_visit' visit.id %}"
+                 class="text-sm text-red-600 border-2 border-red-600 px-3 py-2 rounded-md mr-2">Unschedule</a>
+              <a href="{% url 'health_center:visit_add' visit.id %}"
+                 class="text-sm text-white bg-green-600 px-3 py-2 rounded-md">Visit</a>
+            </div>
+          </div>
+        </div>
+        <!-- End User card -->
+      {% empty %}
+        <div class="w-full col-span-3 py-6 bg-slate-100 rounded-xl">
+          <div class="px-12 py-4">
+            <h4 class="text-3xl">No visits today</h4>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <h4 class="text-xl text-gray-500 mt-6">Future visits</h4>
+    <div class="grid-cols-1 lg:grid-cols-3 grid w-full my-8 gap-2">
+      {% for visit in future_visits %}
+        <!-- User card -->
+        <div class="w-full py-6 bg-slate-100 rounded-xl">
+          <div class="px-12 py-4">
+            <h4 class="text-3xl">{{ visit.patient.full_name }}</h4>
+            <p class="text-sm font-bold text-gray-500">
+              Phone: <span class="text-gray-500 font-normal">{{ visit.patient.phone }}</span>
+            </p>
+          </div>
+
+          <div class="py-2 px-12">
+            <div class="flex justify-end pt-6">
+              <a href="{% url 'health_center:unschdule_visit' visit.id %}"
+                 class="text-sm text-red-600 border-2 border-red-600 px-3 py-2 rounded-md mr-2">Unschedule</a>
+              <a href="{% url 'health_center:visit_add' visit.id %}"
+                 class="text-sm text-white bg-green-600 px-3 py-2 rounded-md">Visit</a>
+            </div>
+          </div>
+        </div>
+        <!-- End User card -->
+      {% empty %}
+        <div class="w-full col-span-3 py-6 bg-slate-100 rounded-xl">
+          <div class="px-12 py-4">
+            <h4 class="text-3xl">No visits today</h4>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="w-full col-span-3 py-6 bg-slate-100 rounded-xl">
+      <div class="px-12 py-4">
+        <h4 class="text-3xl">No Visits found</h4>
+      </div>
+    </div>
+  {% endif %}
+
+{% endblock %}
+{% block extra_scripts %}
+  <script src="{% static 'js/get_query_parser.js' %}"></script>
+  <script src="{% static 'js/health_center/patients/list.js' %}"></script>
+{% endblock %}

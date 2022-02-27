@@ -121,9 +121,9 @@ class PatientVisitDetail(BaseModel):
     blood_pressure = models.CharField(max_length=10)
     pulse = models.IntegerField()
     general_random_blood_sugar = models.CharField(max_length=10)
-    personal_hygiene = models.TextField()
-    mouth_hygiene = models.TextField()
-    public_hygiene = models.TextField()
+    personal_hygiene = models.TextField(null=True, blank=True)
+    mouth_hygiene = models.TextField(null=True, blank=True)
+    public_hygiene = models.TextField(null=True, blank=True)
     systemic_examination = models.CharField(max_length=20, choices=SYSTEMIC_EXAMINATION_CHOICES)
     patient_at_pease = models.BooleanField(default=False)
     symptoms = MultiSelectField(

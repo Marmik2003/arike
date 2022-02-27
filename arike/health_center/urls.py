@@ -23,6 +23,15 @@ from arike.health_center.views.patient_views import (
     PatientTreatmentNoteCreateView,
     PatientTreatmentNoteUpdateView,
     PatientTreatmentNoteDeleteView,
+    PatientVisitListView,
+)
+
+from arike.health_center.views.visit_views import (
+    ScheduleCreateView,
+    ScheduledVisitListView,
+    ScheduleDeleteView,
+    VisitDetailsCreateView,
+    VisitDetailView,
 )
 
 app_name = 'health_center'
@@ -133,5 +142,39 @@ urlpatterns += [
         'patients/<int:patient_id>/treatments/<int:treatment_id>/notes/<int:pk>/delete/',
         PatientTreatmentNoteDeleteView.as_view(),
         name='patient_treatment_note_delete'
+    ),
+]
+
+# Visit Views
+urlpatterns += [
+    path(
+        'schedule/',
+        ScheduledVisitListView.as_view(),
+        name='visit_list'
+    ),
+    path(
+        'patients/visits/create/<int:patient_id>/',
+        ScheduleCreateView.as_view(),
+        name='schedule_create'
+    ),
+    path(
+        'schedule/visit/<int:pk>/add/',
+        VisitDetailsCreateView.as_view(),
+        name='visit_add'
+    ),
+    path(
+        'schedule/unschedule/<int:pk>/',
+        ScheduleDeleteView.as_view(),
+        name='unschdule_visit'
+    ),
+    path(
+        'patients/visits/<int:patient_id>/',
+        PatientVisitListView.as_view(),
+        name='patient_visit_history'
+    ),
+    path(
+        'patients/visits/<int:patient_id>/<int:pk>/',
+        VisitDetailView.as_view(),
+        name='visit_detail'
     ),
 ]

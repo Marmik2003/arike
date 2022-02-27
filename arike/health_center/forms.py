@@ -94,6 +94,9 @@ class PatientVisitScheduleForm(forms.ModelForm):
     class Meta:
         model = PatientVisitSchedule
         fields = ['date', 'duration']
+        widgets = {
+            'date': forms.widgets.DateInput(attrs={'type': 'date'}),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

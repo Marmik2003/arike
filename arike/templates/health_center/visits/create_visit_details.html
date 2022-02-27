@@ -1,0 +1,131 @@
+{% extends 'partials/dashboard/base.html' %}
+{% block title %}Schedule - {{ request.user.get_role_display }}{% endblock %}
+{% block sidebar %}
+  {% include 'health_center/partials/sidebar.html' %}
+{% endblock %}
+{% block dashboard_content %}
+  <div class="flex flex-wrap justify-center">
+    <div class="flex w-full md:w-1/2">
+      <h2 class="text-4xl">Add visit details</h2>
+    </div>
+  </div>
+  <div class="flex my-8 justify-center">
+    <div class="w-full md:w-8/12">
+      <form method="post">
+        {% csrf_token %}
+        {% if form.errors %}
+          {% for error in form.non_field_errors %}
+            <p> {{ error }} </p>
+          {% endfor %}
+        {% endif %}
+
+        <div class="grid lg:grid-cols-2 w-full mb-6 gap-2">
+          <div class="w-full mb-6 md:mb-0">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                   for="{{ form.palliative_phase.id_for_label }}">
+              {{ form.palliative_phase.label }}
+            </label>
+            {{ form.palliative_phase }}
+            <p class="text-gray-500 my-2 mx-6">{{ form.palliative_phase.errors }}</p>
+          </div>
+          <div class="w-full mb-6 md:mb-0">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                   for="{{ form.blood_pressure.id_for_label }}">
+              {{ form.blood_pressure.label }}
+            </label>
+            {{ form.blood_pressure }}
+            <p class="text-gray-500 my-2 mx-6">{{ form.blood_pressure.errors }}</p>
+          </div>
+          <div class="w-full mb-6 md:mb-0">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                   for="{{ form.general_random_blood_sugar.id_for_label }}">
+              {{ form.general_random_blood_sugar.label }}
+            </label>
+            {{ form.general_random_blood_sugar }}
+            <p class="text-gray-500 my-2 mx-6">{{ form.general_random_blood_sugar.errors }}</p>
+          </div>
+          <div class="w-full mb-6 md:mb-0">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                   for="{{ form.pulse.id_for_label }}">
+              {{ form.pulse.label }}
+            </label>
+            {{ form.pulse }}
+            <p class="text-gray-500 my-2 mx-6">{{ form.pulse.errors }}</p>
+          </div>
+          <div class="w-full mb-6 md:mb-0">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                   for="{{ form.personal_hygiene.id_for_label }}">
+              {{ form.personal_hygiene.label }}
+            </label>
+            {{ form.personal_hygiene }}
+            <p class="text-gray-500 my-2 mx-6">{{ form.personal_hygiene.errors }}</p>
+          </div>
+          <div class="w-full mb-6 md:mb-0">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                   for="{{ form.mouth_hygiene.id_for_label }}">
+              {{ form.mouth_hygiene.label }}
+            </label>
+            {{ form.mouth_hygiene }}
+            <p class="text-gray-500 my-2 mx-6">{{ form.mouth_hygiene.errors }}</p>
+          </div>
+          <div class="w-full mb-6 md:mb-0">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                   for="{{ form.public_hygiene.id_for_label }}">
+              {{ form.public_hygiene.label }}
+            </label>
+            {{ form.public_hygiene }}
+            <p class="text-gray-500 my-2 mx-6">{{ form.public_hygiene.errors }}</p>
+          </div>
+          <div class="w-full mb-6 md:mb-0">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                   for="{{ form.systemic_examination.id_for_label }}">
+              {{ form.systemic_examination.label }}
+            </label>
+            {{ form.systemic_examination }}
+            <p class="text-gray-500 my-2 mx-6">{{ form.systemic_examination.errors }}</p>
+          </div>
+          <div class="w-full lg:col-span-2 mb-6 md:mb-0">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                   for="{{ form.symptoms.id_for_label }}">
+              {{ form.symptoms.label }}
+            </label>
+            {% for value, text in form.symptoms.field.choices %}
+              <div class="flex">
+                <label class="inline-flex items-center mt-3">
+                  <input id="id_symptoms_{{ forloop.counter0 }}" class="form-checkbox h-6 w-6 rounded text-green-500 border-0 bg-slate-100 m-2"  name="{{ form.symptoms.name }}" type="checkbox"
+                       value="{{ value }}"{% if value in checked_symptoms %} checked="checked"{% endif %}>
+                  <span>{{ text }}</span>
+                </label>
+              </div>
+            {% endfor %}
+            <p class="text-gray-500 my-2 mx-6">{{ form.symptoms.errors }}</p>
+          </div>
+          <div class="w-full mb-6 md:mb-0">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                   for="{{ form.patient_at_pease.id_for_label }}">
+              {{ form.patient_at_pease.label }}
+            </label>
+            {{ form.patient_at_pease }}
+            <p class="text-gray-500 my-2 mx-6">{{ form.patient_at_pease.errors }}</p>
+          </div>
+          <div class="w-full lg:col-span-2 mb-6 md:mb-0">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                   for="{{ form.notes.id_for_label }}">
+              {{ form.notes.label }}
+            </label>
+            {{ form.notes }}
+            <p class="text-gray-500 my-2 mx-6">{{ form.notes.errors }}</p>
+          </div>
+        </div>
+        <!-- submit button -->
+        <div class="flex">
+          <button
+            class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-12 rounded-lg focus:shadow-outline "
+            type="submit">
+            Create
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}
