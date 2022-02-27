@@ -61,6 +61,7 @@ class PatientCreateView(NurseRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.facility = self.request.user.facility
+        form.instance.nurse = self.request.user
         form.instance.ward = self.request.user.facility.ward
         return super().form_valid(form)
 

@@ -1,0 +1,40 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+</head>
+<body>
+Hello {% if user.first_name %}{{ user.first_name }}{% else %}User{% endif %},
+<br>
+<br>
+Here is your daily report:
+<br>
+<br>
+<h5>Yesterday's summary:</h5>
+<ul>
+  <li>
+    <strong>Total number of Visits:</strong> {{ yesterday_visits }}
+  </li>
+  <li>
+    <strong>Total number of treatments:</strong> {{ yesterday_treatments }}
+  </li>
+  <li>
+    <strong>Total number of diseases investigated:</strong> {{ yesterday_diseases }}
+  </li>
+  <li>
+    <strong>Total number of New Patients:</strong> {{ yesterday_patients }}
+  </li>
+</ul>
+<br>
+<br>
+<h5>Today's summary:</h5>
+<ul>
+  <li>
+    <strong>Total number of Visits:</strong> {{ today_visits }}
+  </li>
+</ul>
+<br>
+<br>
+Thank you for using Arike!
+
+</body>
+</html>

@@ -69,6 +69,7 @@ class Patient(BaseModel):
     expired_time = models.DateTimeField(null=True, blank=True)
     ward = models.ForeignKey('district_admin.Ward', on_delete=models.PROTECT)
     facility = models.ForeignKey('district_admin.Facility', on_delete=models.PROTECT)
+    nurse = models.ForeignKey('users.User', on_delete=models.PROTECT, null=True, blank=True)
 
     def __str__(self):
         return self.full_name

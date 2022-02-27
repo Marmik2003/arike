@@ -1,8 +1,10 @@
+import datetime
+
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.urls import reverse
-
+from django.utils import timezone
 
 USER_ROLES = (
     ('dist_admin', 'District Admin'),
@@ -65,3 +67,19 @@ class User(AbstractUser):
 
     def get_role(self):
         return self.role
+
+
+class NurseReportSetting(models.Model):
+    nurse = models.OneToOneField(User, on_delete=models.CASCADE)
+    is_report_enabled = models.BooleanField(default=False)
+    report_time = models.TimeField(null=True, blank=True)
+    last_sent_report_time = models.DateTimeField(null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if self.last_sent_report_time is None:
+            self.last_sent_report_time = timezone.now().replace(
+                hour=self.report_time.hour,
+                minute=self.report_time.minute
+            ) - datetime.timedelta(days=1)
+        obj = super().save(*args, **kwargs)
+        return obj
