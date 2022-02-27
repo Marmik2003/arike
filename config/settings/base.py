@@ -284,7 +284,7 @@ CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 # ------------------------------------------------------------------------------
 CELERY_BEAT_SCHEDULE = {
     "send_email_report": {
-        "task": "arike.tasks.send_daily_report",
+        "task": "arike.users.tasks.send_daily_report",
         "schedule": crontab(minute="*/1"),
     },
 }
