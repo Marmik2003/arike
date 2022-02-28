@@ -37,7 +37,7 @@ def send_daily_report():
             patients_treated_count = PatientTreatment.objects.filter(given_by=user, created_date__gte=yesterday).count()
             patients_disease_count = PatientDisease.objects.filter(investigated_by=user, created_date__gte=yesterday)\
                 .count()
-            patients_notes_count = TreatmentNote.objects.filter(given_by=user, created_date__gte=yesterday).count()
+            patients_notes_count = TreatmentNote.objects.filter(nurse=user, created_date__gte=yesterday).count()
             patients_treated_count += patients_notes_count
             today_visits = PatientVisitSchedule.objects.filter(
                 date__gte=today,
