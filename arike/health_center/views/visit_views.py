@@ -102,7 +102,7 @@ class VisitDetailsCreateView(NurseRequiredMixin, CreateView):
         form.instance.patient_visit_schedule = visit_schedule
         visit_schedule.visited = True
         visit = visit_schedule.save()
-        send_relative_report.delay(visit.id)
+        send_relative_report.delay(visit_schedule.id)
         return super().form_valid(form)
 
 
