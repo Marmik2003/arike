@@ -226,6 +226,7 @@ class PatientVisitDetailForm(forms.ModelForm):
             widget=forms.CheckboxInput(
                 attrs={
                     'class': 'form-checkbox h-6 w-6 rounded text-green-500 border-0 bg-slate-100'
-                }
-            )
+                },
+            ),
+            required=False
         )
