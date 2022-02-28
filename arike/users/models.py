@@ -51,7 +51,7 @@ class UserManager(BaseUserManager):
 
 class User(AbstractUser):
     username = None
-    phone_number = models.CharField(max_length=10, unique=True)
+    phone_number = models.CharField(max_length=15, unique=True)
     role = models.CharField(max_length=10, choices=USER_ROLES)
     is_verified = models.BooleanField(default=False)
     district = models.ForeignKey('district_admin.District', null=True, blank=True, on_delete=models.PROTECT)
