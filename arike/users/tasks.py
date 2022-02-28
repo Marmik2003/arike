@@ -1,6 +1,7 @@
 import logging
 from datetime import timedelta
 
+from celery import shared_task
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
 from django.db import transaction
@@ -61,6 +62,7 @@ def send_daily_report():
             logger.info(f"Daily report sent to {user.email}")
 
 
+@shared_task
 def send_relative_report(visit_id):
     """Celery task that sends relative report to nurse."""
     with transaction.atomic():
