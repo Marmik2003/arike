@@ -101,8 +101,9 @@ class VisitDetailsCreateView(NurseRequiredMixin, CreateView):
         visit_schedule = PatientVisitSchedule.objects.get(id=self.kwargs['pk'])
         form.instance.patient_visit_schedule = visit_schedule
         visit_schedule.visited = True
-        visit = visit_schedule.save()
-        send_relative_report.delay(visit_schedule.id)
+        visit_schedule.save()
+        visit = form.save()
+        send_relative_report.delay(visit.id)
         return super().form_valid(form)
 
 
