@@ -61,7 +61,7 @@ def send_daily_report():
             logger.info(f"Daily report sent to {user.email}")
 
 
-def send_relative_report(patient_id, visit_id):
+def send_relative_report(visit_id):
     """Celery task that sends relative report to nurse."""
     with transaction.atomic():
         visit = PatientVisitDetail.objects.get(id=visit_id)
