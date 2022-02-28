@@ -62,7 +62,7 @@ def send_daily_report():
             logger.info(f"Daily report sent to {user.email}")
 
 
-@shared_task
+@celery_app.task()
 def send_relative_report(visit_id):
     """Celery task that sends relative report to nurse."""
     with transaction.atomic():
