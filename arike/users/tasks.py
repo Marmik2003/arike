@@ -24,7 +24,8 @@ yesterday = today - timedelta(days=1)
 def send_daily_report():
     """Celery task that sends daily report to nurse."""
     with transaction.atomic():
-        reports = NurseReportSetting.objects.select_for_update().filter(last_sent_report_time__lt=yesterday)
+        reports = NurseReportSetting.objects.select_for_update().filter(last_sent_report_time__lte=yesterday)
+        print("reports", reports.count())
         for report in reports:
             user = User.objects.get(id=report.nurse.id)
             patients_count = Patient.objects.filter(nurse=user, created_date__gte=yesterday).count()
