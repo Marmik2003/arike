@@ -58,7 +58,7 @@ class ProfileForm(forms.ModelForm):
     )
 
     report_time = forms.TimeField(
-        label='Report time',
+        label='Report time (UTC)',
         widget=forms.TimeInput(
             attrs={
                 'class': input_classes,
