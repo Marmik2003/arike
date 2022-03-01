@@ -97,4 +97,6 @@ def send_relative_report(visit_id):
                 to=relative_emails
             )
             email_msg.attach_alternative(render_to_string('email_templates/relative_report.html', context), "text/html")
+            email_msg.send()
+            logger.info(f"Relative report sent to {relative_emails}")
             logger.info(f"Relative report sent to {patient.full_name}'s relatives")
