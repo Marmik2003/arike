@@ -87,7 +87,7 @@ def send_relative_report(visit_id):
             'notes': notes,
         }
         relatives = patient.patientfamilymember_set.all()
-        relative_emails = relatives.values_list('relative__email', flat=True)
+        relative_emails = relatives.values_list('email', flat=True)
         relative_emails = [i for i in list(set(relative_emails)) if i]
         if relative_emails:
             email_msg = EmailMultiAlternatives(
