@@ -71,7 +71,7 @@ def send_relative_report(visit_id):
     with transaction.atomic():
         visit = PatientVisitSchedule.objects.get(id=visit_id)
         patient = visit.patient
-        visit_details = PatientVisitDetail.objects.filter(visit=visit).order_by('-created_date').first()
+        visit_details = PatientVisitDetail.objects.filter(patient_visit_schedule=visit).order_by('-created_date').first()
         palliative_phase = visit_details.get_palliative_phase_display()
         sugar = visit_details.general_random_blood_sugar
         pulse = visit_details.pulse
