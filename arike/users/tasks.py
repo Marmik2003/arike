@@ -3,7 +3,7 @@ from datetime import timedelta
 
 from celery import shared_task
 from django.contrib.auth import get_user_model
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMultiAlternatives
 from django.db import transaction
 from django.template.loader import render_to_string
 from django.utils import timezone
@@ -52,12 +52,14 @@ def send_daily_report():
                 'yesterday_patients': patients_count,
                 'today_visits': today_visits,
             }
-            send_mail(
-                "Daily Report",
-                render_to_string('email_templates/daily_report.html', context),
-                "marmik@thedataboy.com",
-                [user.email, "marmik@thedataboy.com"],
+            email_msg = EmailMultiAlternatives(
+                subject="Arike - Daily Report",
+                body="",
+                from_email="marmik@thedataboy.com",
+                to=[user.email]
             )
+            email_msg.attach_alternative(render_to_string('email_templates/daily_report.html', context), "text/html")
+            email_msg.send()
             report.last_sent_report_time = today
             report.save()
             logger.info(f"Daily report sent to {user.email}")
@@ -75,6 +77,7 @@ def send_relative_report(visit_id):
         blood_pressure = visit.blood_pressure
         notes = visit.notes
         context = {
+            'patient': patient,
             'date': visit.created_date.date().strftime("%d/%m/%Y"),
             'palliative_phase': palliative_phase,
             'sugar': sugar,
@@ -83,13 +86,14 @@ def send_relative_report(visit_id):
             'notes': notes,
         }
         relatives = patient.patientfamilymember_set.all()
-        for relative in relatives:
-            relative_email = relative.email
-            if relative_email:
-                send_mail(
-                    "Arike - Patient Visit Details",
-                    render_to_string('email_templates/relative_report.html', context),
-                    "marmik@thedataboy.com",
-                    [patient.nurse.email]
-                )
-                logger.info(f"Relative report sent to {patient.nurse.email}")
+        relative_emails = relatives.values_list('relative__email', flat=True)
+        relative_emails = [i for i in list(set(relative_emails)) if i]
+        if relative_emails:
+            email_msg = EmailMultiAlternatives(
+                subject="Arike - Patient Visit Details",
+                body="",
+                from_email="marmik@thedataboy.com",
+                to=relative_emails
+            )
+            email_msg.attach_alternative(render_to_string('email_templates/relative_report.html', context), "text/html")
+            logger.info(f"Relative report sent to {patient.full_name}'s relatives")
