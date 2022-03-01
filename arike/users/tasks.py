@@ -69,16 +69,17 @@ def send_daily_report():
 def send_relative_report(visit_id):
     """Celery task that sends relative report to nurse."""
     with transaction.atomic():
-        visit = PatientVisitDetail.objects.get(id=visit_id)
-        patient = visit.patient_visit_schedule.patient
-        palliative_phase = visit.get_palliative_phase_display()
-        sugar = visit.general_random_blood_sugar
-        pulse = visit.pulse
-        blood_pressure = visit.blood_pressure
-        notes = visit.notes
+        visit = PatientVisitSchedule.objects.get(id=visit_id)
+        patient = visit.patient
+        visit_details = PatientVisitDetail.objects.filter(visit=visit).order_by('-created_date').first()
+        palliative_phase = visit_details.get_palliative_phase_display()
+        sugar = visit_details.general_random_blood_sugar
+        pulse = visit_details.pulse
+        blood_pressure = visit_details.blood_pressure
+        notes = visit_details.notes
         context = {
             'patient': patient,
-            'date': visit.created_date.date().strftime("%d/%m/%Y"),
+            'date': visit_details.created_date.date().strftime("%d/%m/%Y"),
             'palliative_phase': palliative_phase,
             'sugar': sugar,
             'pulse': pulse,
