@@ -7,6 +7,7 @@ from arike.district_admin.mixins import DistrictAdminRequiredMixin
 from arike.district_admin.models import Ward, Facility, FACILITY_KIND
 from arike.users.models import User, USER_ROLES
 from arike.district_admin.forms import UserForm
+from arike.users.tasks import new_user_onboarding
 
 
 class AllUsersView(DistrictAdminRequiredMixin, ListView):
@@ -63,8 +64,9 @@ class CreateUserView(DistrictAdminRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.district = self.request.user.district
         form.instance.password = make_password('Arike@101#')
-
-        return super().form_valid(form)
+        form = form.save()
+        new_user_onboarding.delay(form.id)
+        return HttpResponseRedirect(self.success_url)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -98,4 +98,5 @@ class DeleteFacilityView(DistrictAdminRequiredMixin, DeleteView):
         return HttpResponseRedirect(self.success_url)
 
     def get_queryset(self):
-        queryset = self.model.objects.filter(ward__localbody__district=self.request.user.district)
+        queryset = Facility.objects.filter(ward__localbody__district=self.request.user.district)
+        return queryset

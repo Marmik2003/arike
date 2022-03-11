@@ -100,3 +100,20 @@ def send_relative_report(visit_id):
             email_msg.send()
             logger.info(f"Relative report sent to {relative_emails}")
             logger.info(f"Relative report sent to {patient.full_name}'s relatives")
+
+
+@celery_app.task()
+def new_user_onboarding(user_id):
+    """Celery task that sends relative report to nurse."""
+    with transaction.atomic():
+        user = User.objects.get(id=user_id)
+        context = {
+            'user': user,
+        }
+        email_msg = EmailMultiAlternatives(
+            subject="Arike - New User Onboarding",
+            body="",
+            from_email="marmik@thedataboy.com",
+            to=[user.email]
+        )
+        email_msg.attach_alternative(render_to_string('email_templates/new_user_onboarding.html', context), "text/html")
