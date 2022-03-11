@@ -117,3 +117,4 @@ def new_user_onboarding(user_id):
             to=[user.email]
         )
         email_msg.attach_alternative(render_to_string('email_templates/new_user_onboarding.html', context), "text/html")
+        email_msg.send()
