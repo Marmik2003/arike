@@ -129,7 +129,6 @@ class UserForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        print(cleaned_data.get('role'))
         if cleaned_data.get('role') == 'pri_nurse' and cleaned_data.get('facility').kind != 'phc':
             raise forms.ValidationError('Primary Nurse can only be assigned to PHC')
         if cleaned_data.get('role') == 'sec_nurse' and cleaned_data.get('facility').kind != 'chc':
